@@ -7,6 +7,28 @@
 
 using namespace std;
 
+struct dictionary {
+		string term;
+		string docName;
+		int freq;
+
+		bool operator!=(const dictionary& a) {
+		if (a.term != term || a.docName != docName) {
+			return true;
+		} else {
+			return false;
+		}
+		}
+
+		bool operator==(const dictionary& a) {
+		if (a.term == term && a.docName == docName) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+};
+
 // Open the main file and return the list of filenames contained within it
 vector<string> openingInput(string inputFile){
 	ifstream fin(inputFile);
@@ -26,8 +48,9 @@ vector<string> openingInput(string inputFile){
 }
 
 // If a word already exists, increment its frequency by 1
-void increment(map<string, int> tokens, string currentToken) {
-	tokens[currentToken] = ++tokens[currentToken];
+void increment(vector<dictionary>* tokens, dictionary currentDict, int index) {
+	++currentDict.freq;
+	(*tokens)[index] = currentDict;
 }
 
 // If a word contains a character specified in the array, it will remove it.
@@ -50,12 +73,12 @@ bool isStopWord(string word, vector<string> stopWords) {
 
 
 // Go through a file and count the frequency of each term accordingly
-vector< map<string, int> > openingFiles(string inputFile, vector<string> stopWordVector){
+void openingFiles(string inputFile, vector<string> stopWordVector,
+		string::size_type *longestWord, string::size_type *longestFilteredWord,
+		vector<dictionary>* allTokens, vector<dictionary>* filteredTokens){
 	ifstream fin(inputFile);
-	vector< map<string, int> > dictionaries;
-	map<string, int> allTokens;
-	map<string, int> filteredTokens;
 	string currentWord;
+	dictionary temp;
 
 
 	if (!fin) {
@@ -64,28 +87,42 @@ vector< map<string, int> > openingFiles(string inputFile, vector<string> stopWor
 
 	//Loop through file, read each word into the vector of tokens
 	while (fin >> currentWord) {
+		// remove punctuation
 		currentWord = containsPunctuation(currentWord);
+		// to lower case
+		transform(currentWord.begin(), currentWord.end(), currentWord.begin(), ::tolower);
 
-		if (filteredTokens[currentWord]) {
-			increment(allTokens, currentWord);
+		if (currentWord.length() > *longestWord) {
+			*longestWord = currentWord.length();
+		}
+
+		temp.term = currentWord;
+		temp.docName = inputFile;
+
+		if (int index = find((*allTokens).begin(), (*allTokens).end(), temp) != (*allTokens).end()) {
+			//increment(allTokens, temp, index);
 			if (isStopWord(currentWord, stopWordVector)) {
-				increment(filteredTokens, currentWord);
+				//increment(filteredTokens, temp, index);
 			}
 		} else {
-			allTokens[currentWord] = 1;
+
+			temp.freq = 1;
+
+			(*allTokens).push_back(temp);
+
 			if (isStopWord(currentWord, stopWordVector)) {
-				filteredTokens[currentWord] = 1;
+				if (currentWord.length() > *longestFilteredWord) {
+					*longestFilteredWord = currentWord.length();
+				}
+
+				(*filteredTokens).push_back(temp);
 			}
 		}
 
 	}
 	
-	dictionaries.push_back(allTokens);
-	dictionaries.push_back(filteredTokens);
-
 	fin.close();
 
-	return dictionaries;
 }
 
 // Read the tokens from a file and return them as a vector of strings
@@ -95,12 +132,21 @@ vector<string> readFile(string file) {
 	string currentWord;
 
 	while (fin >> currentWord) {
+		transform(currentWord.begin(), currentWord.end(), currentWord.begin(), ::tolower);
 		tokens.push_back(currentWord);
 	}
 
 	fin.close();
 
 	return tokens;
+}
+
+
+void outputDictionary(vector< map<string, int> >,int longestWord) {
+
+	//print all documents
+	//iterate through all documents
+
 }
 
 
@@ -129,7 +175,7 @@ int main(){
 	// PART 2: PROCESSING
 	cout << "DISPLAYING WHAT'S IN EACH FILE STARTS HERE" << endl << endl;
 
-	//Testing to see if things are displaying properly when reading from the file
+
 
 	// Stop words
 	string stopWordFilename = "stopwords.txt";
@@ -137,9 +183,13 @@ int main(){
 
 	// File processing
 	string currentFile;
-	vector< map<string, int> > allTokensDict;
-	vector< map<string, int> > filteredTokensDict;
-	vector< map<string, int> > fileDictionary;
+
+	vector<dictionary> *allTokensDict;
+	vector<dictionary> *filteredTokensDict;
+
+	// Will get the length of the longest word for both dictionaries
+	string::size_type *longestWordLength = 0;
+	string::size_type *longestFilteredWordLength = 0;;
 
 	// Read words from the stop words list
 	stopWordList = readFile(stopWordFilename);
@@ -152,16 +202,7 @@ int main(){
 
 			// Open the file and process every word.
 			// Returns all tokens and a filtered tokens dictionary.
-			fileDictionary = openingFiles(currentFile, stopWordList);
-
-			// Store in the allTokens dictionary
-			allTokensDict.push_back(fileDictionary[0]);
-
-			// Store in filtered dictionary after filtering
-			filteredTokensDict.push_back(fileDictionary[1]);
-
-			// Reset the vector
-			fileDictionary.clear();
+			openingFiles(currentFile, stopWordList, longestWordLength, longestFilteredWordLength, allTokensDict, filteredTokensDict);
 
 			// PART 2: END
 
@@ -172,8 +213,8 @@ int main(){
 		cerr << message << endl;
 	}
 
-	// PART 3: OUTPUT
 
+	// PART 3: OUTPUT
 
 	// PART 3: END
 

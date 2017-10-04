@@ -10,7 +10,6 @@
 #include <fstream>
 #include <string>
 #include <vector>
-#include <map>
 #include <algorithm>
 #include <iomanip>
 
@@ -188,7 +187,6 @@ void processFile(string inputFile, vector<string> stopWordVector,
                 }
             }
         }
-
     }
     fin.close();
 }

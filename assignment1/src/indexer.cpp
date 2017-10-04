@@ -1,3 +1,11 @@
+/*
+ * COMP 345: Assignment 1
+ * Team members:
+ * Samuel Dufresne		26992633
+ * Maude Braunstein 	27545967
+ */
+
+
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -29,6 +37,10 @@ struct dictionary {
 			return false;
 		}
 	}
+
+	string toString() {
+		return this->term + ", " + this->docName;
+	}
 };
 
 // Read a file and return a vector<string> of the terms stored as a list.
@@ -56,6 +68,7 @@ string containsPunctuation(string word) {
 	return word;
 }
 
+// Increments the frequency of the dictionary at the indicated vector index
 void increment(vector<dictionary> &tokens, dictionary &currentDict, int index) {
     currentDict.freq = currentDict.freq + 1;
     tokens[index] = currentDict;
@@ -91,6 +104,27 @@ vector<dictionary> sortDict(vector<dictionary> dict) {
 	return dict;
 }
 
+// Looks for a match of term and docName
+bool compareEntries(dictionary item, string term, string docName) {
+	if (item.term == term) {
+		if (item.docName == docName) {
+			return true;
+		}
+	}
+	return false;
+}
+
+// Looks through the vector and returns the index of the dictionary of matching term and docName
+int findIndex(vector<dictionary> dict, string term, string docName) {
+	for (std::vector<dictionary>::iterator it = dict.begin(); it != dict.end(); ++it) {
+		if (compareEntries(*it, term, docName)) {
+			int index = it - dict.begin();
+			return index;
+		}
+	}
+	return -1;
+}
+
 // Go through a file and count the frequency of each term accordingly
 // Maintains 2 vector<dictionary>. One is stopword-filtered, the other is not.
 // Maintains 2 ints of the longest term in each vector<dictionary>
@@ -102,11 +136,9 @@ void processFile(string inputFile, vector<string> stopWordVector,
     string currentWord;
     dictionary tempNF, tempF;
 
-
     if (!fin) {
         throw "Error opening input file. Closing";
     }
-
 
     // Loop through file, read each word into the vector of tokens
     while (fin >> currentWord) {
@@ -126,21 +158,26 @@ void processFile(string inputFile, vector<string> stopWordVector,
         tempF.term = currentWord;
         tempF.docName = inputFile;
 
-        // If the word is already in the vector, increment its frequency counter
-        if (int index = find((allTokens).begin(), (allTokens).end(), tempNF) != (allTokens).end()) {
-            increment(allTokens, allTokens[index], index);
-        }
-        else {
+        string docName = inputFile;
+        string term = currentWord;
+
+
+        if (findIndex((allTokens), term, docName) > 0) {
+        	increment(allTokens, allTokens[findIndex((allTokens), term, docName)],
+        			findIndex((allTokens), term, docName));
+        } else {
         	// Otherwise, it's a new entry so its frequency is 1. Push to the vector
             tempNF.freq = 1;
             allTokens.push_back(tempNF);
         }
 
+
         // Is it a stop word? If not, continue
         if (!isStopWord(currentWord, stopWordVector)) {
             // Is this a new entry for the filtered words list? If not, increment its frequency
-            if (int index = find((filteredTokens).begin(), (filteredTokens).end(), tempF) != (filteredTokens).end()) {
-                increment(filteredTokens, filteredTokens[index], index);
+            if (findIndex((filteredTokens), term, docName) > 0) {
+                increment(filteredTokens, filteredTokens[findIndex((filteredTokens), term, docName)],
+                		findIndex((filteredTokens), term, docName));
             }
             //Otherwise, it's a new entry and we push it to the list
             else {
@@ -156,6 +193,7 @@ void processFile(string inputFile, vector<string> stopWordVector,
     fin.close();
 }
 
+// Helper function to calculate the width of the table
 int getTotalWidth(vector<string> fileNames, int longestWord) {
 	// Calculate the total width of the table:
 	int width = longestWord;
@@ -166,17 +204,19 @@ int getTotalWidth(vector<string> fileNames, int longestWord) {
 	return width;
 }
 
+// Processes the elements to display a table of term-document frequency
 void output(vector<dictionary> dict, vector<string> fileNames, int longestWord) {
 	string previousWord = "";
 	bool firstWord = true;
 	unsigned freqCount = 0;
-	unsigned totalWidth = getTotalWidth(fileNames, longestWord);
 
 
 	// If longest word is shorter than dictionary:
-	if (longestWord < 8) {
-		longestWord = 8;
+	if (longestWord < 10) {
+		longestWord = 10;
 	}
+
+	unsigned totalWidth = getTotalWidth(fileNames, longestWord);
 
 	// Print first line:
 	cout << " " << setfill('-') << setw(totalWidth) << " " << endl;

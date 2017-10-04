@@ -95,65 +95,65 @@ vector<dictionary> sortDict(vector<dictionary> dict) {
 // Maintains 2 vector<dictionary>. One is stopword-filtered, the other is not.
 // Maintains 2 ints of the longest term in each vector<dictionary>
 void processFile(string inputFile, vector<string> stopWordVector,
-	string::size_type & longestWord, string::size_type & longestFilteredWord,
-	vector<dictionary> & allTokens, vector<dictionary> & filteredTokens) {
+    string::size_type & longestWord, string::size_type & longestFilteredWord,
+    vector<dictionary> & allTokens, vector<dictionary> & filteredTokens) {
 
-	ifstream fin(inputFile);
-	string currentWord;
-	dictionary temp;
+    ifstream fin(inputFile);
+    string currentWord;
+    dictionary tempNF, tempF;
 
-	if (!fin) {
-		throw "Error opening input file. Closing";
-	}
 
-	//Loop through file, read each word into the vector of tokens
-	while (fin >> currentWord) {
-		// Remove punctuation using a helper method
-		currentWord = containsPunctuation(currentWord);
-		// Transform term to lower case using built in method
-		transform(currentWord.begin(), currentWord.end(), currentWord.begin(), ::tolower);
+    if (!fin) {
+        throw "Error opening input file. Closing";
+    }
 
-		// Update longestWord if necessary
-		if (currentWord.length() > longestWord) {
-			longestWord = currentWord.length();
-		}
 
-		//
-		temp.term = currentWord;
-		temp.docName = inputFile;
-		if (int index = find((allTokens).begin(), (allTokens).end(), temp) != (allTokens).end()) {
-			increment(allTokens, temp, index);
-			if (isStopWord(currentWord, stopWordVector)) {
-				increment(filteredTokens, temp, index);
-			}
-		}
-		else {
-			temp.freq = 1;
+    // Loop through file, read each word into the vector of tokens
+    while (fin >> currentWord) {
+        // Remove punctuation
+        currentWord = containsPunctuation(currentWord);
+        // Transform term to lower case using built in method
+        transform(currentWord.begin(), currentWord.end(), currentWord.begin(), ::tolower);
 
-			(allTokens).push_back(temp);
+        // Update longestWord if necessary
+        if (currentWord.length() > longestWord) {
+            longestWord = currentWord.length();
+        }
 
-			if (!isStopWord(currentWord, stopWordVector)) {
-				if (currentWord.length() > longestFilteredWord) {
-					longestFilteredWord = currentWord.length();
-				}
+        // Using temporary entries to store the current word and its file name
+        tempNF.term = currentWord;
+        tempNF.docName = inputFile;
+        tempF.term = currentWord;
+        tempF.docName = inputFile;
 
-				(filteredTokens).push_back(temp);
-			}
-		}
-		//Sort the two dictionaries
-		allTokens = sortDict(allTokens);
-		filteredTokens = sortDict(filteredTokens);
+        // If the word is already in the vector, increment its frequency counter
+        if (int index = find((allTokens).begin(), (allTokens).end(), tempNF) != (allTokens).end()) {
+            increment(allTokens, allTokens[index], index);
+        }
+        else {
+        	// Otherwise, it's a new entry so its frequency is 1. Push to the vector
+            tempNF.freq = 1;
+            allTokens.push_back(tempNF);
+        }
 
-		//Go through filtered words and find the longest
-		for (vector<dictionary>::const_iterator i = filteredTokens.begin(); i != filteredTokens.end(); ++i) {
-			if (i->term.length() > longestFilteredWord) {
-				longestFilteredWord = currentWord.length();
-			}
-		}
-	}
+        // Is it a stop word? If not, continue
+        if (!isStopWord(currentWord, stopWordVector)) {
+            // Is this a new entry for the filtered words list? If not, increment its frequency
+            if (int index = find((filteredTokens).begin(), (filteredTokens).end(), tempF) != (filteredTokens).end()) {
+                increment(filteredTokens, filteredTokens[index], index);
+            }
+            //Otherwise, it's a new entry and we push it to the list
+            else {
+                tempF.freq = 1;
+                filteredTokens.push_back(tempF);
+                if (currentWord.length() > longestFilteredWord) {
+                	longestFilteredWord = currentWord.length();
+                }
+            }
+        }
 
-	fin.close();
-
+    }
+    fin.close();
 }
 
 int getTotalWidth(vector<string> fileNames, int longestWord) {
@@ -304,6 +304,7 @@ int main(){
 	allTokensDict 		= sortDict(allTokensDict);
 	filteredTokensDict 	= sortDict(filteredTokensDict);
 	// PART 2: END
+
 
 	// PART 3: OUTPUT
 	cout << "DICTIONARY CONTAINING ALL TOKENS:" << endl;

@@ -8,6 +8,7 @@
 #include <math.h>
 #include "Indexer.h"
 #include "Document.h"
+#include "Tokenizer.h"
 
 Indexer::Indexer() {
 	normalized = false;
@@ -19,7 +20,10 @@ int Indexer::size() {
 }
 
 void operator>>(const Document doc, std::vector<Indexer::Entry> index) {
+	// First: Process Document with a tokenizer object
+	Tokenizer tokenizer ();
 
+	// Second: Take the given data structure and process it into the indexer's data structures
 }
 
 // For each entry, compute its tf-idf

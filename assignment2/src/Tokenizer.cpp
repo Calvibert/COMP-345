@@ -5,18 +5,18 @@
  *      Author: samue
  */
 
-#include "tokenizer.h"
+#include "Tokenizer.h"
 
-tokenizer::tokenizer() {
+Tokenizer::Tokenizer() {
 	// TODO Auto-generated constructor stub
 
 }
 
-tokenizer::~tokenizer() {
+Tokenizer::~Tokenizer() {
 	// TODO Auto-generated destructor stub
 }
 
-std::vector<std::string> tokenizer::splitIntoTokens(std::string filename){
+std::vector<std::string> Tokenizer::splitIntoTokens(std::string filename){
 	std::ifstream fin(filename);
 	std::vector<std::string> tokens;
 	std::string currentWord;
@@ -38,7 +38,7 @@ std::vector<std::string> tokenizer::splitIntoTokens(std::string filename){
 	return tokens;
 }
 
-std::string tokenizer::containsPunctuation(std::string word) {
+std::string Tokenizer::containsPunctuation(std::string word) {
 	word.erase(std::remove_if(word.begin(), word.end(), ::ispunct), word.end());
 	return word;
 }

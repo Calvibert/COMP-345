@@ -14,10 +14,10 @@
 #include <iostream>
 #include <fstream>
 
-class tokenizer {
+class Tokenizer {
 public:
-	tokenizer();
-	virtual ~tokenizer();
+	Tokenizer();
+	virtual ~Tokenizer();
 	std::vector<std::string> splitIntoTokens(std::string filename);
 	std::string containsPunctuation(std::string word);
 };

@@ -16,25 +16,24 @@ Tokenizer::~Tokenizer() {
 	// TODO Auto-generated destructor stub
 }
 
-std::vector<std::string> Tokenizer::splitIntoTokens(std::string filename){
-	std::ifstream fin(filename);
+std::vector<std::string> Tokenizer::splitIntoTokens(std::string text){
 	std::vector<std::string> tokens;
-	std::string currentWord;
+	std::string word;
+	std::vector<char> breakwords;
 
-	if (!fin) {
-		throw "Error opening input file. Closing";
+	// Iterate over the characters in the document's text
+	for(char& c : text) {
+		if (std::find(breakwords.begin(), breakwords.end(), c)!=breakwords.end()) {
+			// char in array, reached the end of a word.
+			tokens.push_back(word);
+			word = "";
+			// On to the next char
+			continue;
+		}
+		// add char to word
+		word += tolower(c);
 	}
 
-	while (fin >> currentWord) {
-		// Remove punctuation
-		currentWord = containsPunctuation(currentWord);
-		// Transform term to lower case using built in method
-		transform(currentWord.begin(), currentWord.end(), currentWord.begin(), ::tolower);
-
-		//std::cout << currentWord << std::endl;
-		tokens.push_back(currentWord);
-	}
-	fin.close();
 	return tokens;
 }
 

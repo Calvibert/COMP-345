@@ -19,11 +19,13 @@ int Indexer::size() {
 	return docCount;
 }
 
-void operator>>(const Document doc, std::vector<Indexer::Entry> index) {
+void operator>>(Document doc, std::vector<Indexer::Entry> index) {
 	// First: Process Document with a tokenizer object
-	Tokenizer tokenizer ();
+	Tokenizer tokenizer;
+	std::vector<std::string> tokens = tokenizer.splitIntoTokens(doc.getText());
 
 	// Second: Take the given data structure and process it into the indexer's data structures
+
 }
 
 // For each entry, compute its tf-idf

@@ -14,11 +14,11 @@
 #include <iostream>
 #include <fstream>
 
-class stopword {
+class Stopword {
 public:
 
-	stopword();
-	virtual ~stopword();
+	Stopword();
+	virtual ~Stopword();
 	std::vector<std::string> fillList(std::string inputFile);
 	std::string containsPunctuation(std::string word);
 	bool operator()(std::string token);

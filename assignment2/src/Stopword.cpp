@@ -5,18 +5,18 @@
  *      Author: samue
  */
 
-#include "stopword.h"
+#include "Stopword.h"
 
-stopword::stopword() {
+Stopword::Stopword() {
 	// TODO Auto-generated constructor stub
 
 }
 
-stopword::~stopword() {
+Stopword::~Stopword() {
 	// TODO Auto-generated destructor stub
 }
 
-std::vector<std::string> stopword::fillList(std::string inputFile){
+std::vector<std::string> Stopword::fillList(std::string inputFile){
 	std::ifstream fin(inputFile);
 	std::vector<std::string> allTokens;
 	std::string currentWord;
@@ -36,12 +36,12 @@ std::vector<std::string> stopword::fillList(std::string inputFile){
 	return allTokens;
 }
 
-std::string stopword::containsPunctuation(std::string word) {
+std::string Stopword::containsPunctuation(std::string word) {
 	word.erase(std::remove_if(word.begin(), word.end(), ::ispunct), word.end());
 	return word;
 }
 
-bool stopword::operator()(std::string token){
+bool Stopword::operator()(std::string token){
 	for (std::vector<std::string>::const_iterator i = stopwordList.begin(); i != stopwordList.end(); ++i){
 		if ((*i).compare(token))
 			return true;
@@ -49,9 +49,9 @@ bool stopword::operator()(std::string token){
 	return false;
 }
 
-void stopword::setStopwordList(std::vector<std::string> sl){
+void Stopword::setStopwordList(std::vector<std::string> sl){
 	stopwordList = sl;
 }
-std::vector<std::string> stopword::getStopwordList(){
+std::vector<std::string> Stopword::getStopwordList(){
 	return stopwordList;
 }

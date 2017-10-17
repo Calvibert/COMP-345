@@ -13,86 +13,41 @@
 #include <vector>
 #include <algorithm>
 
-using namespace std;
 
 Document::Document() {
 	fileName = "";
 	longestWord = 0;
+	text = "";
 }
 
 Document::Document(std::string newFileName) {
 	fileName = newFileName;
 	longestWord = 0;
+	text = "";
 }
 
-bool Document::compareEntries(TermDoc item, string term) {
-	if (item.term == term) {
-		return true;
+const std::string Document::name(){
+	return fileName;
+}
+
+const int Document::size(){
+	return text.length();
+}
+
+const std::string Document::content(){
+	readDoc();
+	return text;
+}
+
+
+void Document::readDoc(){
+	std::ifstream fin(fileName);
+	if(!fin){
+		throw "Error opening file. Closing";
 	}
-	return false;
+	std::string content((std::istreambuf_iterator<char>(fin)), std::istreambuf_iterator<char>());
+	setText(content);
 }
-
-bool isStopWord(std::string word, std::vector<std::string> stopWords) {
-	return find(stopWords.begin(), stopWords.end(), word) != stopWords.end();
-}
-
-int Document::findIndex(string word) {
-	for (std::vector<TermDoc>::iterator it = dict.begin(); it != dict.end();
-			++it) {
-		if (compareEntries(*it, word)) {
-			int index = it - dict.begin();
-			return index;
-		}
-	}
-	return -1;
-}
-
-void Document::processFile(vector<string> stopWords) {
-	if (fileName != "") {
-		std::ifstream fin(fileName);
-		std::string currentWord;
-		TermDoc temp;
-
-		if (!fin) {
-			throw "Error opening input file. Closing";
-		}
-
-		// Loop through file, read each word into the vector of tokens
-		while (fin >> currentWord) {
-			// Remove punctuation
-			currentWord = containsPunctuation(currentWord);
-			// Transform term to lower case using built in method
-			transform(currentWord.begin(), currentWord.end(), currentWord.begin(), ::tolower);
-
-			// Update longestWord if necessary
-			if (currentWord.length() > longestWord) {
-				longestWord = currentWord.length();
-			}
-
-			// Check for the stop word list:
-			if (!stopWords.empty()) {
-				// Skip rest if it is a stop word
-				bool result = isStopWord(currentWord, stopWords);
-				if (result) {
-					continue;
-				}
-			}
-
-			// Check if current word is in dict
-			if (int index = findIndex(currentWord) > 0) {
-				increment(index);
-				// If not, add it
-			} else {
-				// Otherwise, it's a new entry so its frequency is 1. Push to the vector
-				temp.freq = 1;
-				dict.push_back(temp);
-			}
-
-		}
-		fin.close();
-	}
-}
-
 
 // Various getters and setters
 std::string Document::getFileName() {
@@ -110,6 +65,15 @@ int Document::getLongestWord() {
 void Document::setLongestWord(int newLongest) {
 	longestWord = newLongest;
 }
+
+std::string Document::getText(){
+	return text;
+}
+
+void Document::setText(std::string t){
+	text = t;
+}
+
 // End getters and setters
 
 Document::~Document() {

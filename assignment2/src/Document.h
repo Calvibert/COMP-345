@@ -14,29 +14,29 @@
 class Document {
 public:
 
-	struct TermDoc {
-			// Members
-			std::string term;
-			int freq;
-
-			// Not equal operator
-			bool operator!=(const TermDoc& a) {
-				if (a.term != term) {
-					return true;
-				} else {
-					return false;
-				}
-			}
-
-			// Equal operator
-			bool operator==(const TermDoc& a) {
-				if (a.term == term) {
-					return true;
-				} else {
-					return false;
-				}
-			}
-		};
+//	struct TermDoc {
+//			// Members
+//			std::string term;
+//			int freq;
+//
+//			// Not equal operator
+//			bool operator!=(const TermDoc& a) {
+//				if (a.term != term) {
+//					return true;
+//				} else {
+//					return false;
+//				}
+//			}
+//
+//			// Equal operator
+//			bool operator==(const TermDoc& a) {
+//				if (a.term == term) {
+//					return true;
+//				} else {
+//					return false;
+//				}
+//			}
+//		};
 
 	Document();
 	Document(std::string fileName);
@@ -44,24 +44,23 @@ public:
 			Document doc);
 	const std::string name(); 	// Return document filename
 	const int size();			// Return size in characters
-	const Document content();	// Return content
-	void processFile(std::vector<std::string> stopWords);
-	std::string containsPunctuation(std::string word);
-	void increment(int index);
-	bool isStopWord(std::string word, std::vector<std::string> stopWords);
-	bool sortTerms();
-	int findIndex(std::string word);
-	bool compareEntries(TermDoc term, std::string word);
+	const std::string content();	// Return content
+
+	void readDoc();
+
 	std::string getFileName();
 	void setFileName(std::string newFileName);
 	int getLongestWord();
 	void setLongestWord(int newLongest);
+	std::string getText();
+	void setText(std::string t);
 	virtual ~Document();
 
 private:
 	std::string fileName;
-	std::vector<TermDoc> dict;
+	//std::vector<TermDoc> dict;
 	unsigned longestWord;
+	std::string text;
 };
 
 #endif /* DOCUMENT_H_ */

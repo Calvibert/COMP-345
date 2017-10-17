@@ -7,9 +7,13 @@
 //============================================================================
 
 #include <iostream>
+#include "Document.h"
 using namespace std;
 
 int main() {
-	cout << "!!!Hello World!!!" << endl; // prints !!!Hello World!!!
+	cout << "we're testing Document" << endl;
+	Document test("testing.txt");
+	string content = test.content();
+	cout << content << endl;
 	return 0;
 }

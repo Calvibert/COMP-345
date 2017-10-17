@@ -11,6 +11,7 @@
 #include <vector>
 #include <string>
 #include <map>
+#include <iostream>
 #include "Document.h"
 
 class Indexer {
@@ -29,14 +30,16 @@ public:
 	Indexer();
 	int size();
 	void operator>>(const Document doc);
-	double normalize();
-	std::vector<query_result> query(std::string queryTerms, int optional = 10);
+	friend std::ostream& operator<<(std::ostream& os, const Indexer& id);
+	void normalize();
+	std::vector<query_result> query(std::string queryTerms, int n = 10);
 	std::vector<Indexer::Entry> getIndex();
 	virtual ~Indexer();
 
 private:
 	std::vector<Indexer::Entry> index;
-	std::map<Document, int> doc_wordCount;
+	std::map<std::string, int> docName_wordCount;
+	std::map<std::string, Document> docName_doc;
 	bool normalized;
 	int docCount;
 

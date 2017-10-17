@@ -14,30 +14,6 @@
 class Document {
 public:
 
-//	struct TermDoc {
-//			// Members
-//			std::string term;
-//			int freq;
-//
-//			// Not equal operator
-//			bool operator!=(const TermDoc& a) {
-//				if (a.term != term) {
-//					return true;
-//				} else {
-//					return false;
-//				}
-//			}
-//
-//			// Equal operator
-//			bool operator==(const TermDoc& a) {
-//				if (a.term == term) {
-//					return true;
-//				} else {
-//					return false;
-//				}
-//			}
-//		};
-
 	Document();
 	Document(std::string fileName);
 	friend const operator<<(std::ostream & os,
@@ -58,7 +34,6 @@ public:
 
 private:
 	std::string fileName;
-	//std::vector<TermDoc> dict;
 	unsigned longestWord;
 	std::string text;
 };

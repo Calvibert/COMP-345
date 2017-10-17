@@ -19,7 +19,6 @@ public:
 	Tokenizer();
 	virtual ~Tokenizer();
 	std::vector<std::string> splitIntoTokens(std::string filename);
-	std::string containsPunctuation(std::string word);
 };
 
 #endif /* TOKENIZER_H_ */

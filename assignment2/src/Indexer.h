@@ -34,6 +34,7 @@ public:
 	void normalize();
 	std::vector<query_result> query(std::string queryTerms, int n = 10);
 	std::vector<Indexer::Entry> getIndex();
+	void resetNormalized();
 	virtual ~Indexer();
 
 private:

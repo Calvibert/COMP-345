@@ -13,32 +13,37 @@
 #include <vector>
 #include <algorithm>
 
-
+// Default constructor
 Document::Document() {
 	fileName = "";
 	longestWord = 0;
 	text = "";
 }
 
+// Constructor that takes a file name
 Document::Document(std::string newFileName) {
 	fileName = newFileName;
 	longestWord = 0;
 	text = "";
 }
 
+// Return the filename of the Document
 const std::string Document::name(){
 	return fileName;
 }
 
+// Return the number of characters in the text
 const int Document::size(){
 	return text.length();
 }
 
+// Return the text in the document
 const std::string Document::content(){
 	readDoc();
 	return text;
 }
 
+// Read the filename. Sets the text in the Document to the content of the file
 void Document::readDoc(){
 	std::ifstream fin(fileName);
 	if(!fin){
@@ -76,6 +81,7 @@ void Document::setText(std::string t){
 
 // End getters and setters
 
+// Default destructor
 Document::~Document() {
 	// TODO Auto-generated destructor stub
 }

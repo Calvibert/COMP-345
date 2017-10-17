@@ -7,15 +7,19 @@
 
 #include "Tokenizer.h"
 
+// Default constructor
 Tokenizer::Tokenizer() {
-	// TODO Auto-generated constructor stub
 
 }
 
+// Default destructor
 Tokenizer::~Tokenizer() {
 	// TODO Auto-generated destructor stub
 }
 
+// Given a string, processes the words into a vector<string> and returns it
+// The tokenization strategy is dependent on the breakwords.
+// It breaks the words down depending on that list of characters
 std::vector<std::string> Tokenizer::splitIntoTokens(std::string text){
 	std::vector<std::string> tokens;
 	std::string word;
@@ -35,9 +39,4 @@ std::vector<std::string> Tokenizer::splitIntoTokens(std::string text){
 	}
 
 	return tokens;
-}
-
-std::string Tokenizer::containsPunctuation(std::string word) {
-	word.erase(std::remove_if(word.begin(), word.end(), ::ispunct), word.end());
-	return word;
 }

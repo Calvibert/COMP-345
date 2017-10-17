@@ -18,8 +18,9 @@ public:
 	struct Entry {
 		// Members
 		std::string term;
-		std::map<std::string, int> docFreq;
-		double tf_idf;
+		std::vector<std::string> docs;
+		std::vector<int> freqs;
+		std::vector<double> tf_idf;
 	};
 	struct query_result {
 		Document doc;
@@ -35,7 +36,7 @@ public:
 
 private:
 	std::vector<Indexer::Entry> index;
-	std::vector<Document> documents;
+	std::map<Document, int> doc_wordCount;
 	bool normalized;
 	int docCount;
 

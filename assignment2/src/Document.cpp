@@ -39,11 +39,11 @@ const std::string Document::content(){
 	return text;
 }
 
-
 void Document::readDoc(){
 	std::ifstream fin(fileName);
 	if(!fin){
 		throw "Error opening file. Closing";
+
 	}
 	std::string content((std::istreambuf_iterator<char>(fin)), std::istreambuf_iterator<char>());
 	setText(content);

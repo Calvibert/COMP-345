@@ -37,27 +37,28 @@ int main() {
 
 	Indexer idx;
 
-//	Document one(filenames[0]);
-//	Document two(filenames[1]);
-//	Document three(filenames[2]);
-//
-//	one >> idx;
-//	two >> idx;
-//	three >> idx;
-
 	for (vector<string>::const_iterator i = filenames.begin(); i != filenames.end(); ++i){
 		Document temp(*i);
 		temp >> idx;
+		int s = idx.size() + 1;
+		idx.setDocCount(s);
+		idx.normalize();
+
 	}
+	string keywords;
+	do{
+		cout << "Please enter your query: " << endl;
 
-	cout << "Please enter your query: " << endl;
-	string keyword;
-	cin >> keyword;
+		getline(cin, keywords);
 
-	vector<Indexer::query_result> results;
-	results = idx.query(keyword, 10);
+		vector<Indexer::query_result> results = idx.query(keywords, 10);
 
 
+//		for (vector<Indexer::query_result>::const_iterator i = results.begin(); i != results.end(); ++i){
+//			cout << *i << endl;
+//		}
 
+
+	}while(keywords != "eof");
 	return 0;
 }

@@ -20,6 +20,9 @@ Indexer::Indexer() {
 int Indexer::size() {
 	return docCount;
 }
+void Indexer::setDocCount(int s){
+	docCount = s;
+}
 
 // Takes a Document object on the LS, an Indexer on RS
 // Processes the Doc's text into tokens
@@ -61,6 +64,8 @@ void operator>>(Document doc, Indexer indexer) {
 	// Indexer requires to be normalized again
 	indexer.resetNormalized();
 }
+
+
 
 // For each entry, compute its tf-idf
 // This operation allows querying
@@ -128,6 +133,7 @@ std::vector<Indexer::query_result> Indexer::query(std::string queryTerms,
 
 }
 
+
 // Return the index of the Indexer
 std::vector<Indexer::Entry> Indexer::getIndex() {
 	return index;
@@ -144,6 +150,10 @@ std::ostream& operator<<(std::ostream& os, const Indexer& id) {
 	os << "Doc count: " << id.docCount << ",";
 	os << "" << id.index[0].docs.size();
 	return os;
+}
+
+Document operator[](int key){
+	Entry
 }
 
 // Indexer desctructor

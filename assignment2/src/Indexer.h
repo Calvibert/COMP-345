@@ -35,6 +35,10 @@ public:
 	std::vector<query_result> query(std::string queryTerms, int n = 10);
 	std::vector<Indexer::Entry> getIndex();
 	void resetNormalized();
+	void setDocCount(int s);
+
+	friend Document operator[](int key);
+
 	virtual ~Indexer();
 
 private:
@@ -47,5 +51,5 @@ private:
 };
 
 void operator>>(Document doc, Indexer indexer);
-
+Document operator[](int key);
 #endif /* INDEXER_H_ */

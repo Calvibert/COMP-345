@@ -25,6 +25,7 @@ Document::Document(std::string newFileName) {
 	fileName = newFileName;
 	longestWord = 0;
 	text = "";
+	readDoc();
 }
 
 // Return the filename of the Document

@@ -23,14 +23,16 @@ Tokenizer::~Tokenizer() {
 std::vector<std::string> Tokenizer::splitIntoTokens(std::string text){
 	std::vector<std::string> tokens;
 	std::string word;
-	std::vector<char> breakwords;
+	std::vector<char> breakwords = {'\n', ',', ' ', '.'};
 
 	// Iterate over the characters in the document's text
 	for(char& c : text) {
 		if (std::find(breakwords.begin(), breakwords.end(), c)!=breakwords.end()) {
 			// char in array, reached the end of a word.
-			tokens.push_back(word);
-			word = "";
+			if (word != ""){
+				tokens.push_back(word);
+				word = "";
+			}
 			// On to the next char
 			continue;
 		}

@@ -46,4 +46,6 @@ private:
 
 };
 
+void operator>>(Document doc, Indexer indexer);
+
 #endif /* INDEXER_H_ */

@@ -12,6 +12,7 @@
 #include <string>
 #include <map>
 #include <iostream>
+#include <math.h>
 #include "Document.h"
 
 class Indexer {
@@ -36,8 +37,11 @@ public:
 	std::vector<Indexer::Entry> getIndex();
 	void resetNormalized();
 	void setDocCount(int s);
+	void incrementDocCount();
+	int getDocCount();
+	std::string toString(std::vector<Indexer::query_result> results);
 
-	friend Document operator[](int key);
+//	friend Document operator[](int key);
 
 	virtual ~Indexer();
 
@@ -51,5 +55,5 @@ private:
 };
 
 void operator>>(Document doc, Indexer indexer);
-Document operator[](int key);
+//Document operator[](int key);
 #endif /* INDEXER_H_ */

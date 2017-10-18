@@ -5,7 +5,6 @@
  *      Author: samue
  */
 
-#include <math.h>
 #include "Indexer.h"
 #include "Document.h"
 #include "Tokenizer.h"
@@ -35,6 +34,7 @@ void operator>>(Document doc, Indexer indexer) {
 	Indexer::Entry entry;
 	std::vector<Indexer::Entry> index = indexer.getIndex();
 
+	std::cout << "We're here!" << std::endl;
 	// Second: Take the given data structure and process it into the indexer's data structures
 	for (unsigned i=0; i<tokens.size(); i++) {
 		for (unsigned j=0; j<index.size(); j++) {
@@ -61,11 +61,19 @@ void operator>>(Document doc, Indexer indexer) {
 		entry.freqs.push_back(1);
 		index.push_back(entry);
 	}
+	// Increment the docCount
+	std::cout << "Increment doc count" << std::endl;
+	indexer.incrementDocCount();
+	std::cout << indexer.getDocCount() << std::endl;
+	std::cout << index.size() << std::endl;
 	// Indexer requires to be normalized again
 	indexer.resetNormalized();
 }
 
-
+// Helper function to increment the doc count
+void Indexer::incrementDocCount() {
+	docCount++;
+}
 
 // For each entry, compute its tf-idf
 // This operation allows querying
@@ -152,8 +160,34 @@ std::ostream& operator<<(std::ostream& os, const Indexer& id) {
 	return os;
 }
 
-Document operator[](int key){
-	Entry
+//Document operator[](int key){
+//
+//}
+
+std::string Indexer::toString(std::vector<Indexer::query_result> results) {
+	std::string output;
+	if (normalized) {
+		if (results.size() < 0) {
+
+			output += "List of the most relevant documents and their score:\n";
+			output += "------------------------------------------------------";
+			for (unsigned i = 0; i < results.size(); i++) {
+				output += "Document: " + results[i].doc.getFileName() + "\n"
+						+ "Score: ";
+				output += results[i].score;
+				output += "\n";
+				output +=
+						"------------------------------------------------------";
+			}
+		} else {
+			output += "Your search term matched no documents.\n";
+		}
+	}
+	return output;
+}
+
+int Indexer::getDocCount() {
+	return docCount;
 }
 
 // Indexer desctructor

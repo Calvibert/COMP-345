@@ -40,18 +40,22 @@ int main() {
 	for (vector<string>::const_iterator i = filenames.begin(); i != filenames.end(); ++i){
 		Document temp(*i);
 		temp >> idx;
-		int s = idx.size() + 1;
-		idx.setDocCount(s);
-		idx.normalize();
-
 	}
+
+	cout << idx.getDocCount() << endl;
+
+	idx.normalize();
+
 	string keywords;
-	do{
+	do {
 		cout << "Please enter your query: " << endl;
 
 		getline(cin, keywords);
 
-		vector<Indexer::query_result> results = idx.query(keywords, 10);
+		// Query with the default 10 best documents match
+		vector<Indexer::query_result> results = idx.query(keywords);
+
+		cout << idx.toString(results) << endl;
 
 
 //		for (vector<Indexer::query_result>::const_iterator i = results.begin(); i != results.end(); ++i){
@@ -59,6 +63,6 @@ int main() {
 //		}
 
 
-	}while(keywords != "eof");
+	} while (keywords != "eof");
 	return 0;
 }

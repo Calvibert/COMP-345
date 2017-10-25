@@ -40,10 +40,5 @@ std::vector<std::string> Tokenizer::splitIntoTokens(std::string text){
 		word += tolower(c);
 	}
 
-	// Add the last word
-	if (word != "") {
-		tokens.push_back(word);
-	}
-
 	return tokens;
 }

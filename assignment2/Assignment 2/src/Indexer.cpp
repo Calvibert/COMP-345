@@ -28,12 +28,11 @@ void Indexer::setDocCount(int s){
 // Processes the Doc's text into tokens
 // Processes the tokens into the index data structure
 // After this operation, the Indexer must be normalized before being queried
-void operator>>(Document doc, Indexer & indexer) {
+void operator>>(Document doc, Indexer * indexer) {
 	// First: Process Document with a tokenizer object
 	Tokenizer tokenizer;
 	std::vector<std::string> tokens = tokenizer.splitIntoTokens(doc.getText());
-	std::vector<Indexer::Entry> index = indexer.getIndex();
-	std::map<std::string, int> docName_wordCount = indexer.getDocNameWordCount();
+	std::vector<Indexer::Entry> index = indexer->getIndex();
 
 	// Second: Take the given data structure and process it into the indexer's data structures
 	for (unsigned i=0; i<tokens.size(); i++) {
@@ -60,14 +59,13 @@ void operator>>(Document doc, Indexer & indexer) {
 		entry.docs.push_back(doc.getFileName());
 		entry.freqs.push_back(1);
 		index.push_back(entry);
-
 	}
 	// Set the indexer's index to the current scope index:
-	indexer.setIndex(index);
+	indexer->setIndex(index);
 	// Increment the docCount
-	indexer.incrementDocCount();
+	indexer->incrementDocCount();
 	// Indexer requires to be normalized again
-	indexer.resetNormalized();
+	indexer->resetNormalized();
 }
 
 // Helper function to increment the doc count
@@ -78,18 +76,19 @@ void Indexer::incrementDocCount() {
 // For each entry, compute its tf-idf
 // This operation allows querying
 void Indexer::normalize() {
-	double tf;
-	double idf;
+
+	double tf = 0;
+	double idf = 0;
 
 	for (unsigned i = 0; i < index.size(); ++i) {
 		for (unsigned j = 0; j < index[i].docs.size(); ++j) {
 			// For each term-doc pairings, compute the tf-idf
-			tf = log(index[i].freqs[j]);
+			tf = index[i].freqs[j] / docName_wordCount[index[i].docs[j]];
 			idf = log(docCount / index[i].docs.size());
-			double tf_idf = (1 + tf) * idf;
-			index[i].tf_idf.push_back(tf_idf);
+			index[i].tf_idf[j] = tf * idf;
 		}
 	}
+
 	normalized = true;
 }
 
@@ -107,6 +106,8 @@ std::vector<Indexer::query_result> Indexer::query(std::string queryTerms,
 	int lowestScore;
 	Tokenizer tokenizer;
 
+
+
 	if (normalized) {
 		// First: process the terms in a vector<string>
 		query_terms = tokenizer.splitIntoTokens(queryTerms);
@@ -117,6 +118,7 @@ std::vector<Indexer::query_result> Indexer::query(std::string queryTerms,
 			for (unsigned j = 0; j < query_terms.size(); ++j) {
 				if (index[i].term == query_terms[j]) {
 					// We got a match!
+					std::cout << "Match!" << std::endl;
 					singleResult.score =
 							Indexer::docName_wordCount[index[i].docs[j]];
 					singleResult.doc = Indexer::docName_doc[index[i].docs[j]];
@@ -132,11 +134,9 @@ std::vector<Indexer::query_result> Indexer::query(std::string queryTerms,
 					}
 				}
 			}
-
-
 		}
 		// Print the query results
-		std::cout << toString(results) << std::endl;
+		toString(results);
 	} else {
 		std::cout << "Please normalize your data set before querying." << std::endl;
 	}
@@ -169,17 +169,19 @@ std::ostream& operator<<(std::ostream& os, const Indexer& id) {
 //}
 
 std::string Indexer::toString(std::vector<Indexer::query_result> results) {
-	std::string output = "";
+	std::string output;
 	if (normalized) {
-		if (results.size() > 0) {
+		if (results.size() < 0) {
+
 			output += "List of the most relevant documents and their score:\n";
-			output += "----------------------------------------------------\n";
+			output += "------------------------------------------------------";
 			for (unsigned i = 0; i < results.size(); i++) {
 				output += "Document: " + results[i].doc.getFileName() + "\n"
 						+ "Score: ";
 				output += results[i].score;
 				output += "\n";
-				output += "----------------------------------------------------\n";
+				output +=
+						"------------------------------------------------------";
 			}
 		} else {
 			output += "Your search term matched no documents.\n";
@@ -194,8 +196,4 @@ int Indexer::getDocCount() const {
 
 void Indexer::setIndex(std::vector<Indexer::Entry> i) {
 	index = i;
-}
-
-std::map<std::string, int> Indexer::getDocNameWordCount() const {
-	return docName_wordCount;
 }

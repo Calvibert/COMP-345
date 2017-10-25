@@ -42,7 +42,6 @@ public:
 	std::string toString(std::vector<Indexer::query_result> results);
 //	friend Document operator[](int key);
 	void setIndex(std::vector<Indexer::Entry> i);
-	std::map<std::string, int> getDocNameWordCount() const;
 
 private:
 	std::vector<Indexer::Entry> index;
@@ -53,6 +52,6 @@ private:
 
 };
 
-void operator>>(Document doc, Indexer & indexer);
+void operator>>(Document doc, Indexer * indexer);
 //Document operator[](int key);
 #endif /* INDEXER_H_ */

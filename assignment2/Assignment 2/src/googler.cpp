@@ -36,13 +36,16 @@ int main() {
 	cout << "Creating Document objects, pushing to indexer" << endl;
 
 	Indexer idxr;
+	Indexer * idxPtr;
+	idxPtr = &idxr;
 
 	for (vector<string>::const_iterator i = filenames.begin(); i != filenames.end(); ++i){
 		Document temp(*i);
-		temp >> idxr;
+		temp >> idxPtr;
 	}
 
-	idxr.normalize();
+	idxPtr->normalize();
+	cout << idxPtr->getIndex()[0].term << ", hello";
 
 	string keywords;
 	do {
@@ -50,12 +53,10 @@ int main() {
 
 		getline(cin, keywords);
 
-		cout << keywords << endl;
-
 		// Query with the default 10 best documents match
-		vector<Indexer::query_result> results = idxr.query(keywords);
+		vector<Indexer::query_result> results = idxPtr->query(keywords);
 
-		cout << idxr.toString(results) << endl;
+		cout << idxPtr->toString(results) << endl;
 
 
 //		for (vector<Indexer::query_result>::const_iterator i = results.begin(); i != results.end(); ++i){

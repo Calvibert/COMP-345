@@ -45,17 +45,17 @@ int main() {
 	idxr.normalize();
 
 	string keywords;
-	do {
+	//do {
 		cout << "Please enter your query: " << endl;
 
 		getline(cin, keywords);
 
-		cout << keywords << endl;
+		//cout << keywords << endl;
 
 		// Query with the default 10 best documents match
 		vector<Indexer::query_result> results = idxr.query(keywords);
 
-		cout << idxr.toString(results) << endl;
+		//cout << idxr.toString(results) << endl;
 
 
 //		for (vector<Indexer::query_result>::const_iterator i = results.begin(); i != results.end(); ++i){
@@ -63,6 +63,6 @@ int main() {
 //		}
 
 
-	} while (keywords != "eof");
+	//} while (keywords != "eof");
 	return 0;
 }

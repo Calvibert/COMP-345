@@ -20,7 +20,6 @@
 class Indexer {
 public:
 	struct Entry {
-		// Members
 		std::string term;
 		std::vector<Document> docs;
 		std::vector<double> freqs;
@@ -34,6 +33,7 @@ public:
 
 	// Output operation
 	friend std::ostream& operator<<(std::ostream& os, const Indexer& id);
+	std::string toString(std::vector<Indexer::query_result> results);
 
 	void normalize();
 	std::vector<query_result> query(std::string queryTerms, int n = 10);
@@ -43,8 +43,6 @@ public:
 	void setDocCount(int s);
 	void incrementDocCount();
 	int getDocCount() const;
-
-	std::string toString(std::vector<Indexer::query_result> results);
 
 	std::map<std::string, Document> getDocNameDoc();
 	void setIndex(std::vector<Indexer::Entry> i);

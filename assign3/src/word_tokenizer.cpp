@@ -7,6 +7,10 @@
 
 #include "word_tokenizer.h"
 
+word_tokenizer::word_tokenizer() {
+
+}
+
 word_tokenizer::word_tokenizer(std::string text) {
 	std::vector<std::string> tokens = splitIntoTokens(text);
 }
@@ -15,8 +19,6 @@ word_tokenizer::~word_tokenizer() {
 
 }
 
-// Given a string, processes the words into a vector<string> and returns it
-// The tokenization strategy is dependent on the breakwords.
 // It breaks the words down depending on that list of characters
 std::vector<std::string>& word_tokenizer::splitIntoTokens(std::string text){
 	dealWithAbbreviations(text); //common abbreviations like UN UK IE, etc.

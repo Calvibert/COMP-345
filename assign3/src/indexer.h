@@ -9,9 +9,7 @@
 #define INDEXER_H_
 
 class indexer {
-public:
-	indexer();
-	virtual ~indexer();
+
 };
 
 #endif /* INDEXER_H_ */

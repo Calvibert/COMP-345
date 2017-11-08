@@ -12,15 +12,15 @@
 #include "Indexer.h"
 using namespace std;
 
-vector<string> indexFiles(string inputFile){
+vector<string> indexFiles(string inputFile) {
 	ifstream fin(inputFile);
 	string currentLine;
 	vector<string> fileNames;
 
-	if(!fin)
+	if (!fin)
 		throw "Error opening file. Closing";
 
-	while(getline(fin, currentLine))
+	while (getline(fin, currentLine))
 		fileNames.push_back(currentLine);
 
 	fin.close();
@@ -37,7 +37,8 @@ int main() {
 
 	Indexer idxr;
 
-	for (vector<string>::const_iterator i = filenames.begin(); i != filenames.end(); ++i){
+	for (vector<string>::const_iterator i = filenames.begin();
+			i != filenames.end(); ++i) {
 		Document temp(*i);
 		temp >> idxr;
 	}
@@ -45,24 +46,12 @@ int main() {
 	idxr.normalize();
 
 	string keywords;
-	//do {
-		cout << "Please enter your query: " << endl;
+	cout << "Please enter your query: " << endl;
 
-		getline(cin, keywords);
+	getline(cin, keywords);
 
-		//cout << keywords << endl;
+	// Query with the default 10 best documents match
+	vector<Indexer::query_result> results = idxr.query(keywords);
 
-		// Query with the default 10 best documents match
-		vector<Indexer::query_result> results = idxr.query(keywords);
-
-		//cout << idxr.toString(results) << endl;
-
-
-//		for (vector<Indexer::query_result>::const_iterator i = results.begin(); i != results.end(); ++i){
-//			cout << *i << endl;
-//		}
-
-
-	//} while (keywords != "eof");
 	return 0;
 }

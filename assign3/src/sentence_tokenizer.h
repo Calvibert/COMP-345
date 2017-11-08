@@ -9,18 +9,24 @@
 #define SRC_SENTENCE_TOKENIZER_H_
 
 #include "abstract_tokenizer.h"
+#include "sentence.h"
 
 class sentence_tokenizer: public abstract_tokenizer {
+
 public:
-	sentence_tokenizer(std::string text);
+	sentence_tokenizer();
 	virtual ~sentence_tokenizer();
 	bool testForTitle(std::string sentence);
-	std::vector<std::string>& splitIntoSentences(std::string filecontents);
+	std::vector<sentence>& splitIntoSentences(Document & doc);
 	bool checkIfWhitespace(std::string sentence);
 	//void dealWithAbbreviations(std::string& sentence);
-	friend std::ostream& operator<<(std::ostream& os, const sentence_tokenizer& wst);
+	friend std::ostream& operator<<(std::ostream& os,
+			sentence_tokenizer& wst);
+	std::vector<sentence> getSentences();
+
 private:
-	std::vector<std::string> sentences;
+	std::vector<sentence> sentences;
+
 };
 
 #endif /* SRC_SENTENCE_TOKENIZER_H_ */

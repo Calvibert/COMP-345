@@ -17,6 +17,7 @@
 
 class word_tokenizer: public abstract_tokenizer {
 public:
+	word_tokenizer();
 	word_tokenizer(std::string text);
 	virtual ~word_tokenizer();
 	std::vector<std::string>& splitIntoTokens(std::string filename);

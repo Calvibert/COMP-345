@@ -11,29 +11,32 @@ sentence::sentence() {
 	setFileName("");
 	setLongestWord(0);
 	setContent("");
+	Document d;
+	doc = d;
 	pos = 0;
 }
 
-sentence::sentence(std::string f){
-	setFileName(f);
-	setContent(index_item::readFile(f));
+sentence::sentence(Document & d, int p, std::string c){
+	setFileName(d.getFileName());
+	setContent(c);
 	setLongestWord(0);
-	pos = 0;
+	setDocument(d);
+	pos = p;
 }
 
 sentence::~sentence() {
 }
 
 // Return the filename of the Document
-const std::string sentence::name() const{
+std::string sentence::name() const {
 	return filename;
 }
 
 // Return the text in the document
-const std::string sentence::content(){
-	//readFile();
-	return contents;
-}
+//std::string sentence::content() const{
+//	//readFile();
+//	return contents;
+//}
 
 // Return the number of characters in the text
 int sentence::size() const{
@@ -65,6 +68,18 @@ std::string sentence::getContent() const{
 
 void sentence::setContent(std::string t){
 	contents = t;
+}
+
+int sentence::getPos() const {
+	return pos;
+}
+
+void sentence::setDocument(Document & d) {
+	doc = d;
+}
+
+Document sentence::getDocument() {
+	return doc;
 }
 
 std::ostream& operator<<(std::ostream& os, const sentence& s){

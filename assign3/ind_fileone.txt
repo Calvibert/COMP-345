@@ -1,0 +1,3 @@
+Here's the first file of five test files containing various words our program will search through. It contains words like adventure, c++, dummies, in, java, programming, and more. It also contains a few stop words like ourselves, about, before, be, at, etc. It's all very neat, but frankly this file is very meta. Other files each contain a poem by Leonard Cohen to be parsed through (or whatever. his face is on a building outside, I'm improvising).
+
+To shake things up though, we'll be starting with this first file that contains a lot of commas, periods, apostrophies, spelling mistakes, run-on sentences, dashes, and a new line.

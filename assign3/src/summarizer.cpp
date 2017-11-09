@@ -17,38 +17,61 @@
 #include "index_item.h"
 #include "Document.h"
 #include "sentence.h"
+#include "sentence_indexer.h"
 
 
 using namespace std;
 
-int main(){
-	//bunch of tests
+vector<string> indexFiles(string inputFile) {
+	ifstream fin(inputFile);
+	string currentLine;
+	vector<string> fileNames;
 
-	//Document d("a3data\\a3data\\q3docs\\APW19980916.1169");
-	//Document d("a3data\\a3data\\q3docs\\APW19980707.0436");
-	//Document d("a3data\\a3data\\q3docs\\APW19980917.0928"); //also contains ...
-	//Document d("a3data\\a3data\\q3docs\\APW19980921.0571");
+	if (!fin)
+		throw "Error opening file. Closing";
 
-	//Document d("a3data\\a3data\\q3docs\\APW19981001.1247"); //contains ...
-	//Document d("a3data\\a3data\\q3docs\\APW19990301.0233");
-	//Document d("a3data\\a3data\\q3docs\\APW20000906.0150");
+	while (getline(fin, currentLine))
+		fileNames.push_back(currentLine);
 
-	//Document d("a3data\\a3data\\q3docs\\APW20000906.0166");
-	//Document d("a3data\\a3data\\q3docs\\NYT19990904.0099");
-	//Document d("a3data\\a3data\\q3docs\\XIE19990503.0043");
-	//Document d("testingdocument.txt");
-	sentence s ("testingdocument.txt");
-
-
-	cout << "Hello" << endl;
-
-	word_tokenizer wt(s.getContent());
-	cout << "this is word_tokenizer:" << endl;
-	cout << wt << endl;
-
-	sentence_tokenizer st(s.getContent());
-	cout << "this is sentence_tokenizer:" << endl;
-	cout << st << endl;
+	fin.close();
+	return fileNames;
 
 }
+
+
+int main(){
+
+	cout << "Enter the index file name: " << endl;
+	string filename;
+	cin >> filename;
+
+	vector<string> filenames = indexFiles(filename);
+	sentence_indexer sidx;
+
+	for (unsigned i = 0; i < filenames.size(); ++i) {
+		sidx.readDocument(filenames[i]);
+	}
+
+	sidx.normalize();
+
+	cout << "Enter the name of a question file: " << endl;
+	string questionfile;
+	cin >> questionfile;
+
+	Document doc(questionfile);
+	cout << doc.getFileName() << endl;
+
+	std::vector<sentence_indexer::query_result> results = sidx.query(doc.getContent());
+
+
+	for (unsigned i = 0; i < results.size(); ++i) {
+		if (results[i].score > 0) {
+			sentence sent = results[i].sent;
+			cout << sent.getContent() << endl;
+		}
+
+	}
+
+}
+
 

@@ -39,7 +39,9 @@ public:
 	std::string toString(std::vector<document_indexer::query_result> results);
 
 	void normalize();
-	std::vector<query_result> query(std::string queryTerms, int n = 10);
+	std::vector<document_indexer::query_result> query(std::string queryTerms, int n = 10);
+
+	std::vector<query_result> doSomething(std::string queryTerms, int n = 10);
 
 	int size();
 	void resetNormalized();
@@ -63,6 +65,7 @@ public:
 	void incMap(std::map<std::string, std::vector<double> > & map);
 	Document getDocFromName(std::string name);
 	void setDocNameDoc(std::map<std::string, Document> map);
+	std::vector<document_indexer::query_result> sort(std::vector<document_indexer::query_result> results, int max);
 
 private:
 	std::vector<document_indexer::Entry> index;
@@ -71,5 +74,7 @@ private:
 	bool normalized;
 	double docCount;
 };
+
+void operator>>(Document doc, document_indexer & indexer);
 
 #endif /* DOCUMENT_INDEXER_H_ */

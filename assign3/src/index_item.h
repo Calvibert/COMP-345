@@ -16,6 +16,12 @@
 class index_item {
 public:
 	std::string readFile(std::string filename);
+	virtual ~index_item() {}
+	//virtual std::string getName() = 0;
+	struct query_result {
+		index_item* index_item;
+		double score;
+	};
 };
 
 #endif /* INDEX_ITEM_H_ */

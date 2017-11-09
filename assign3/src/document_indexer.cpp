@@ -93,10 +93,9 @@ void document_indexer::normalize() {
 }
 
 // Operation to query the index
-std::vector<document_indexer::query_result> document_indexer::query(std::string queryTerms,
-		int n) {
+std::vector<document_indexer::query_result> document_indexer::query(std::string queryTerms, int n) {
 	std::vector<std::string> query_terms;
-	std::vector<document_indexer::query_result> results;
+	std::vector<query_result> results;
 	word_tokenizer tokenizer;
 	std::vector<document_indexer::Entry> index = getIndex();
 
@@ -156,23 +155,7 @@ std::vector<document_indexer::query_result> document_indexer::query(std::string 
 			}
 		}
 
-		// Output the scores
-//		for (std::vector<double>::const_iterator it =
-//				query_terms_scores.begin(); it != query_terms_scores.end();
-//				++it) {
-//			std::cout << *it << std::endl;
-//		}
-//
-//		for (std::map<std::string, std::vector<double> >::const_iterator it =
-//				docs_tf_idfs.begin(); it != docs_tf_idfs.end(); ++it) {
-//			std::cout << it->first << std::endl;
-//			std::vector<double> outDbl = it->second;
-//			for (unsigned i = 0; i < outDbl.size(); ++i) {
-//				std::cout << outDbl[i] << std::endl;
-//			}
-//		}
-
-		std::vector<query_result> similarities;
+		std::vector<document_indexer::query_result> similarities;
 		for (std::map<std::string, std::vector<double> >::const_iterator it =
 				docs_tf_idfs.begin(); it != docs_tf_idfs.end(); ++it) {
 			double nominator = 0;
@@ -184,7 +167,7 @@ std::vector<document_indexer::query_result> document_indexer::query(std::string 
 				query_denominator += pow(query_terms_scores[i], 2);
 				doc_denominator += pow(doc_terms_scores[i], 2);
 			}
-			query_result tempRes;
+			document_indexer::query_result tempRes;
 			std::string name = it->first;
 			std::map<std::string, Document> docName_doc = this->getDocNameDoc();
 			Document docu = docName_doc[name];
@@ -195,9 +178,17 @@ std::vector<document_indexer::query_result> document_indexer::query(std::string 
 			tempRes.score = nominator / denominator;
 			results.push_back(tempRes);
 		}
-
+//		std::cout << "before" << std::endl;
+//		for (unsigned i = 0; i < results.size(); ++i) {
+//			std::cout << results[i].doc.getFileName() << ": "
+//					<< results[i].score << std::endl;
+//		}
+		results = sort(results, n);
+		std::cout << "Sorted result" << std::endl;
 		for (unsigned i = 0; i < results.size(); ++i) {
-			std::cout << results[i].doc.getFileName() << ": " << results[i].score << std::endl;
+
+			std::cout << results[i].doc.getFileName() << ": "
+					<< results[i].score << std::endl;
 		}
 
 	} else {
@@ -325,5 +316,31 @@ std::map<std::string, Document> document_indexer::getDocNameDoc() {
 
 void document_indexer::setDocNameDoc(std::map<std::string, Document> map) {
 	docName_doc = map;
+}
+
+std::vector<document_indexer::query_result> document_indexer::sort(std::vector<document_indexer::query_result> results, int max) {
+	std::vector<document_indexer::query_result> sorted;
+	std::vector<bool> done;
+	for (unsigned i = 0; i<results.size(); ++i) {
+		done.push_back(false);
+	}
+	if (docCount < max) {
+		max = docCount;
+	}
+	for (int i = 0; i<max; ++i) {
+		document_indexer::query_result highest;
+		highest.score = 0;
+		for (unsigned j = 0; j<results.size(); ++j) {
+			if (done[j]) {
+				continue;
+			}
+			if (highest.score < results[j].score) {
+				highest = results[j];
+				done[j] = true;
+			}
+		}
+		sorted.push_back(highest);
+	}
+	return sorted;
 }
 

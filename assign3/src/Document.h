@@ -35,6 +35,7 @@ private:
 	std::string contents;
 	std::string filename;
 	int longestWord;
+	int wordCount;
 };
 
 #endif /* SRC_DOCUMENT_H_ */

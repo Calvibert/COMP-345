@@ -13,7 +13,7 @@
 class indexer {
 public:
 	struct query_result {
-		index_item doc;
+		index_item element;
 		double score;
 	};
 };

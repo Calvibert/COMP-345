@@ -28,10 +28,6 @@ public:
 		std::vector<double> freqs;
 		std::vector<double> tf_idf;
 	};
-	struct query_result {
-		sentence sent;
-		double score;
-	};
 	sentence_indexer();
 	void readDocument(std::string fileName);
 	void normalize();
@@ -40,7 +36,6 @@ public:
 
 	std::vector<sentence> getSentences();
 	std::vector<Document> getDocs();
-	//void addSentence(sentence & s);
 	void addSentences(std::vector<sentence> & vs);
 	void addDoc(Document & d);
 	void addToIndex(std::string term, sentence & sent);

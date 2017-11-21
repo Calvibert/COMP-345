@@ -44,12 +44,10 @@ bool sentence_tokenizer::testForTitle(std::string sentence){
 }
 
 std::vector<sentence> & sentence_tokenizer::splitIntoSentences(Document & doc){
-	std::string filecontents = doc.getContent();
+	std::string filecontents = doc.content();
 	sentence newSentence;
-		dealWithAbbreviations(filecontents); //common abbreviations like UN UK IE, etc.
-		std::string filename = doc.getFileName();
-
-		//std::vector<std::string> sentences = getSentences();
+		dealWithAbbreviations(filecontents);
+		std::string filename = doc.name();
 
 		std::string currentSentence = "";
 		std::istringstream iss(filecontents);
@@ -99,7 +97,7 @@ std::vector<sentence> & sentence_tokenizer::splitIntoSentences(Document & doc){
 				}
 				//If we get here, it's just a regular period. This means our sentence is done and we can add it to the vector
 				else{
-					sentence newSentence(doc, (position - currentSentence.length()-1), currentSentence);
+					sentence newSentence(doc, (position - currentSentence.length()), currentSentence);
 					sentences.push_back(newSentence);
 					currentSentence = "";
 				}
@@ -133,9 +131,3 @@ std::vector<sentence> sentence_tokenizer::getSentences() {
 	return sentences;
 }
 
-//std::ostream& operator<<(std::ostream& os, const sentence_tokenizer& st){
-//	for(std::vector<std::string>::const_iterator it = st.getSentences().begin(); it != st.getSentences().end(); ++it){
-//		os << *it << std::endl;
-//	}
-//	return os;
-//}

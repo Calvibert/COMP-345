@@ -15,13 +15,21 @@
 
 class index_item {
 public:
-	std::string readFile(std::string filename);
+	index_item() : filename(""), itemContent(""), length(0) {}
 	virtual ~index_item() {}
-	//virtual std::string getName() = 0;
-	struct query_result {
-		index_item* index_item;
-		double score;
-	};
+
+	void setContent(const std::string& content);
+	void setName(const std::string& name);
+	void setSize(int size);
+
+	int size() const;
+	std::string name() const;
+	std::string content() const;
+
+private:
+	std::string filename;
+	std::string itemContent;
+	int length;
 };
 
 #endif /* INDEX_ITEM_H_ */

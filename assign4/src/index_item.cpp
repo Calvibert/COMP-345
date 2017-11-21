@@ -7,16 +7,24 @@
 
 #include "index_item.h"
 
-// Read the filename. Sets the text in the Document to the content of the file
-std::string index_item::readFile(std::string filename) {
-	std::ifstream fin(filename);
-	if (!fin) {
-		std::cout << "Could not open file. Closing" << std::endl;
-		std::exit(1);
-	}
-	std::string content((std::istreambuf_iterator<char>(fin)),
-			std::istreambuf_iterator<char>());
-	fin.close();
 
-	return content;
+void index_item::setContent(const std::string& c) {
+	itemContent = c;
+}
+
+void index_item::setName(const std::string& n) {
+	filename = n;
+}
+void index_item::setSize(int s) {
+	length = s;
+}
+
+int index_item::size() const {
+	return length;
+}
+std::string index_item::name() const {
+	return filename;
+}
+std::string index_item::content() const {
+	return itemContent;
 }

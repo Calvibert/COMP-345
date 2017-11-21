@@ -24,15 +24,15 @@ void document_indexer::setDocCount(int s) {
 }
 
 // Takes a Document object on the LS, an Indexer on RS
-void operator>>(Document doc, document_indexer & indexer) {
+void operator>>(index_item doc, document_indexer & indexer) {
 	word_tokenizer tokenizer;
-	std::vector<std::string> tokens = tokenizer.splitIntoTokens(doc.getContent());
+	std::vector<std::string> tokens = tokenizer.splitIntoTokens(doc.content());
 	std::vector<document_indexer::Entry> index = indexer.getIndex();
 
 	std::vector<std::string> docNames = indexer.getDocNames();
-	docNames.push_back(doc.getFileName());
-	std::map<std::string, Document> docName_doc = indexer.getDocNameDoc();
-	docName_doc[doc.getFileName()] = doc;
+	docNames.push_back(doc.name());
+	std::map<std::string, index_item> docName_doc = indexer.getDocNameDoc();
+	docName_doc[doc.name()] = doc;
 	indexer.setDocNameDoc(docName_doc);
 
 	for (unsigned i = 0; i < tokens.size(); ++i) {
@@ -41,13 +41,13 @@ void operator>>(Document doc, document_indexer & indexer) {
 			if (index[j].term == tokens[i]) {
 				// Token is in index already
 				for (unsigned k = 0; k < index[j].docs.size(); ++k) {
-					if (index[j].docs[k].getFileName() == doc.getFileName()) {
+					if (index[j].docs[k].name() == doc.name()) {
 						index[j].freqs[k]++;
 						exists = true;
 						break;
 					}
 					if (k == (index[j].docs.size() - 1)) {
-						index[j].docs.push_back(doc.getFileName());
+						index[j].docs.push_back(doc);
 						index[j].freqs.push_back(1);
 						exists = true;
 						break;
@@ -137,8 +137,8 @@ std::vector<document_indexer::query_result> document_indexer::query(std::string 
 					int length;
 					found = true;
 					for (unsigned j = 0; j < i_it->docs.size(); ++j) {
-						Document doc = i_it->docs[j];
-						std::string t = doc.getFileName();
+						index_item doc = i_it->docs[j];
+						std::string t = doc.name();
 						std::vector<double> tempDbl = docs_tf_idfs[t];
 						tempDbl.push_back(i_it->tf_idf[j]);
 						docs_tf_idfs[t] = tempDbl;
@@ -169,9 +169,9 @@ std::vector<document_indexer::query_result> document_indexer::query(std::string 
 			}
 			document_indexer::query_result tempRes;
 			std::string name = it->first;
-			std::map<std::string, Document> docName_doc = this->getDocNameDoc();
-			Document docu = docName_doc[name];
-			tempRes.doc = docu;
+			std::map<std::string, index_item> docName_doc = this->getDocNameDoc();
+			index_item docu = docName_doc[name];
+			tempRes.element = docu;
 			query_denominator = sqrt(query_denominator);
 			doc_denominator = sqrt(doc_denominator);
 			double denominator = query_denominator * doc_denominator;
@@ -187,7 +187,7 @@ std::vector<document_indexer::query_result> document_indexer::query(std::string 
 		std::cout << "Sorted result" << std::endl;
 		for (unsigned i = 0; i < results.size(); ++i) {
 
-			std::cout << results[i].doc.getFileName() << ": "
+			std::cout << results[i].element.name() << ": "
 					<< results[i].score << std::endl;
 		}
 
@@ -245,7 +245,7 @@ void document_indexer::incMap(std::map<std::string, std::vector<double> > & map)
 	}
 }
 
-Document document_indexer::getDocFromName(std::string name) {
+index_item document_indexer::getDocFromName(std::string name) {
 	return docName_doc[name];
 }
 
@@ -274,7 +274,7 @@ std::string document_indexer::toString(std::vector<document_indexer::query_resul
 			output += "List of the most relevant documents and their score:\n";
 			output += "----------------------------------------------------\n";
 			for (unsigned i = 0; i < results.size(); i++) {
-				output += "Document: " + results[i].doc.getFileName() + "\n"
+				output += "Document: " + results[i].element.name() + "\n"
 						+ "Score: ";
 				output += results[i].score;
 				output += "\n";
@@ -310,11 +310,11 @@ std::vector<std::string> document_indexer::getDocNames() {
 	return docNames;
 }
 
-std::map<std::string, Document> document_indexer::getDocNameDoc() {
+std::map<std::string, index_item> document_indexer::getDocNameDoc() {
 	return docName_doc;
 }
 
-void document_indexer::setDocNameDoc(std::map<std::string, Document> map) {
+void document_indexer::setDocNameDoc(std::map<std::string, index_item> map) {
 	docName_doc = map;
 }
 

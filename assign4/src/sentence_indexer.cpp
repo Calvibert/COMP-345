@@ -23,8 +23,8 @@ void sentence_indexer::readDocument(std::string fileName) {
 	std::vector<std::string> terms;
 	for (std::vector<sentence>::const_iterator it = sent_v.begin();
 			it != sent_v.end(); ++it) {
-		terms = w_t.splitIntoTokens(it->getContent());
-		sentence s = getSentence(it->getFileName());
+		terms = w_t.splitIntoTokens(it->content());
+		sentence s = getSentence(it->name());
 		for (std::vector<std::string>::const_iterator tit = terms.begin();
 				tit != terms.end(); ++tit) {
 			addToIndex(*tit, s);
@@ -42,7 +42,7 @@ void sentence_indexer::addToIndex(std::string term, sentence & sent) {
 			std::vector<sentence> tempSents = it->sents;
 			std::vector<double> tempFreqs = it->freqs;
 			for (unsigned i = 0; i < tempSents.size(); ++i) {
-				if ((tempSents[i].getFileName() == sent.getFileName())
+				if ((tempSents[i].name() == sent.name())
 						&& (tempSents[i].getPos() == sent.getPos())) {
 					tempFreqs[i] = ++tempFreqs[i];
 					it->freqs = tempFreqs;
@@ -88,33 +88,39 @@ std::vector<sentence_indexer::query_result> sentence_indexer::query(std::string 
 	word_tokenizer wt;
 	std::vector<std::string> query_terms = wt.splitIntoTokens(queryTerms);
 
+	// Compute tf-idf for the query terms
 	std::vector<double> query_terms_scores;
 	for (unsigned i = 0; i < query_terms.size(); i++) {
 		sentence_indexer::Entry tempEntry = getEntry(query_terms[i]);
 		int thisTermDocCount = tempEntry.sents.size();
 		double tf_idf = log10((docCount + 1) / (thisTermDocCount));
+
 		if (thisTermDocCount == 0) {
 			tf_idf = log10(docCount / 1);
 		}
 		query_terms_scores.push_back(tf_idf);
 	}
 
+	// Populate the sentsNameSents and sentsTfIdfs mappers
 	std::map<std::string, std::vector<double> > sents_tf_idfs;
 	std::vector<double> emptyDbl;
 	for (unsigned it = 0; it < sentences.size(); ++it) {
-		std::string filename = sentences[it].getFileName();
+		std::string filename = sentences[it].name();
 		std::string pos = std::to_string(sentences[it].getPos());
 		std::string identifier = filename + "-" + pos;
+		std::cout << sentences[it] << std::endl;
 		sentsNamesSents[identifier] = sentences[it];
 		sents_tf_idfs[identifier] = emptyDbl;
 	}
 
+	// Populate term_checked vector
 	std::vector<bool> term_checked;
 	for (std::vector<std::string>::const_iterator it = query_terms.begin();
 			it != query_terms.end(); ++it) {
 		term_checked.push_back(false);
 	}
 
+	// Compute tf-idf for each queryTerm-entry match
 	for (std::vector<std::string>::const_iterator qt_it = query_terms.begin();
 			qt_it != query_terms.end(); ++qt_it) {
 		bool found = false;
@@ -127,9 +133,10 @@ std::vector<sentence_indexer::query_result> sentence_indexer::query(std::string 
 				for (unsigned j = 0; j < i_it->sents.size(); ++j) {
 					sentence sent = i_it->sents[j];
 					Document tempDoc = sent.getDocument();
-					std::string identifier = tempDoc.getFileName() + "-" + std::to_string(sent.getPos());
+					std::string identifier = tempDoc.name() + "-" + std::to_string(sent.getPos());
 					std::vector<double> tempDbl = sents_tf_idfs[identifier];
 					tempDbl.push_back(i_it->tf_idf[j]);
+					std::cout << std::to_string(i_it->tf_idf[j]) << std::endl;
 					sents_tf_idfs[identifier] = tempDbl;
 					length = tempDbl.size();
 				}
@@ -140,11 +147,13 @@ std::vector<sentence_indexer::query_result> sentence_indexer::query(std::string 
 			}
 		}
 		if (!found) {
+			std::cout << "NOt found" << std::endl;
 			incMap(sents_tf_idfs);
 		}
 	}
 
-	std::vector<index_item::query_result> similarities;
+	// Does something else. This is where is "fucks up" allegedly
+	std::vector<indexer::query_result> similarities;
 	for (std::map<std::string, std::vector<double> >::const_iterator it =
 			sents_tf_idfs.begin(); it != sents_tf_idfs.end(); ++it) {
 		double nominator = 0;
@@ -156,10 +165,10 @@ std::vector<sentence_indexer::query_result> sentence_indexer::query(std::string 
 			query_denominator += pow(query_terms_scores[i], 2);
 			sent_denominator += pow(sents_terms_scores[i], 2);
 		}
-		sentence_indexer::query_result tempRes;
+		indexer::query_result tempRes;
 		std::string name = it->first;
 		sentence sent = sentsNamesSents[name];
-		tempRes.sent = sent;
+		tempRes.element = sent;
 		query_denominator = sqrt(query_denominator);
 		sent_denominator = sqrt(sent_denominator);
 		if (sent_denominator == 0) {
@@ -173,6 +182,7 @@ std::vector<sentence_indexer::query_result> sentence_indexer::query(std::string 
 	return results;
 }
 
+// Pad the map with empty indexes with zeros at tf-idfs -> TERM WAS FOUND
 void sentence_indexer::padMap(std::map<std::string, std::vector<double> > & map,
 		unsigned length) {
 	for (std::map<std::string, std::vector<double> >::iterator it = map.begin();
@@ -186,6 +196,7 @@ void sentence_indexer::padMap(std::map<std::string, std::vector<double> > & map,
 	}
 }
 
+// Pad the whole map a row of zeros -> NO TERMS MATCHED
 void sentence_indexer::incMap(std::map<std::string, std::vector<double> > & map) {
 	for (std::map<std::string, std::vector<double> >::iterator it = map.begin();
 			it != map.end(); ++it) {
@@ -210,7 +221,7 @@ void sentence_indexer::addSentences(std::vector<sentence> & vs) {
 sentence sentence_indexer::getSentence(std::string fileName) {
 	for (std::vector<sentence>::iterator it = sentences.begin();
 			it != sentences.end(); ++it) {
-		if (it->getFileName() == fileName) {
+		if (it->name() == fileName) {
 			return *it;
 		}
 	}

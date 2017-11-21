@@ -23,17 +23,12 @@ class document_indexer: public indexer {
 public:
 	struct Entry {
 		std::string term;
-		std::vector<Document> docs;
+		std::vector<index_item> docs;
 		std::vector<double> freqs;
 		std::vector<double> tf_idf;
 	};
-	struct query_result {
-		Document doc;
-		double score;
-	};
 	document_indexer();
 
-	// Output operation
 	friend std::ostream& operator<<(std::ostream& os,
 			const document_indexer& id);
 	std::string toString(std::vector<document_indexer::query_result> results);
@@ -41,15 +36,13 @@ public:
 	void normalize();
 	std::vector<document_indexer::query_result> query(std::string queryTerms, int n = 10);
 
-	std::vector<query_result> doSomething(std::string queryTerms, int n = 10);
-
 	int size();
 	void resetNormalized();
 	void setDocCount(int s);
 	void incrementDocCount();
 	int getDocCount() const;
 
-	std::map<std::string, Document> getDocNameDoc();
+	std::map<std::string, index_item> getDocNameDoc();
 	void setIndex(std::vector<document_indexer::Entry> i);
 	std::vector<document_indexer::Entry> getIndex() const;
 	std::map<std::string, double> getDocNameWordCount() const;
@@ -63,18 +56,18 @@ public:
 			unsigned length);
 	std::vector<std::string> getDocNames();
 	void incMap(std::map<std::string, std::vector<double> > & map);
-	Document getDocFromName(std::string name);
-	void setDocNameDoc(std::map<std::string, Document> map);
+	index_item getDocFromName(std::string name);
+	void setDocNameDoc(std::map<std::string, index_item> map);
 	std::vector<document_indexer::query_result> sort(std::vector<document_indexer::query_result> results, int max);
 
 private:
 	std::vector<document_indexer::Entry> index;
-	std::map<std::string, Document> docName_doc;
+	std::map<std::string, index_item> docName_doc;
 	std::vector<std::string> docNames;
 	bool normalized;
 	double docCount;
 };
 
-void operator>>(Document doc, document_indexer & indexer);
+void operator>>(index_item doc, document_indexer & indexer);
 
 #endif /* DOCUMENT_INDEXER_H_ */

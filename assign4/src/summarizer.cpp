@@ -59,15 +59,15 @@ int main(){
 	cin >> questionfile;
 
 	Document doc(questionfile);
-	cout << doc.getFileName() << endl;
+	cout << doc.name() << endl;
 
-	std::vector<sentence_indexer::query_result> results = sidx.query(doc.getContent());
+	std::vector<sentence_indexer::query_result> results = sidx.query(doc.content());
 
 
 	for (unsigned i = 0; i < results.size(); ++i) {
 		if (results[i].score > 0) {
-			sentence sent = results[i].sent;
-			cout << sent.getContent() << endl;
+			index_item sent = results[i].element;
+			cout << sent.content() << endl;
 		}
 
 	}

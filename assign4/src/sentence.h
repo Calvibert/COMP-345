@@ -16,27 +16,15 @@ public:
 	sentence();
 	sentence(Document & d, int p, std::string c);
 	virtual ~sentence();
-	std::string name() const;
-	int size() const;
+
+	int getPos() const;
+	Document getDocument();
+	void setDocument(Document & d);
 
 	friend std::ostream& operator<<(std::ostream& os, const sentence& s);
 
-	std::string getFileName() const;
-	int getLongestWord() const;
-	std::string getContent() const;
-	int getPos() const;
-	Document getDocument();
-
-	void setFileName(std::string newName);
-	void setLongestWord(int newLongest);
-	void setContent(std::string t);
-	void setDocument(Document & d);
-
 private:
-	std::string contents;
-	std::string filename;
 	Document doc;
-	int longestWord;
 	int pos;
 
 };

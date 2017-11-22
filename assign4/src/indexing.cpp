@@ -12,6 +12,7 @@
 //#include <vector>
 //#include <algorithm>
 //#include <iomanip>
+//#include "index_exception.h"
 //
 //using namespace std;
 //
@@ -49,7 +50,7 @@
 //	string currentLine;
 //
 //	if (!fin) {
-//		throw "Error opening input file. Closing";
+//		throw index_exception("Error opening file. Please enter a proper file name.");
 //	}
 //
 //	//Loop through file, read each line into the vector
@@ -69,8 +70,8 @@
 //
 //// Increments the frequency of the dictionary at the indicated vector index
 //void increment(vector<dictionary> &tokens, dictionary &currentDict, int index) {
-//    currentDict.freq = currentDict.freq + 1;
-//    tokens[index] = currentDict;
+//	currentDict.freq = currentDict.freq + 1;
+//	tokens[index] = currentDict;
 //}
 //
 //
@@ -128,67 +129,66 @@
 //// Maintains 2 vector<dictionary>. One is stopword-filtered, the other is not.
 //// Maintains 2 ints of the longest term in each vector<dictionary>
 //void processFile(string inputFile, vector<string> stopWordVector,
-//    string::size_type & longestWord, string::size_type & longestFilteredWord,
-//    vector<dictionary> & allTokens, vector<dictionary> & filteredTokens) {
+//		string::size_type & longestWord, string::size_type & longestFilteredWord,
+//		vector<dictionary> & allTokens, vector<dictionary> & filteredTokens) {
 //
-//    ifstream fin(inputFile);
-//    string currentWord;
-//    dictionary tempNF, tempF;
+//	ifstream fin(inputFile);
+//	string currentWord;
+//	dictionary tempNF, tempF;
 //
-//    if (!fin) {
-//        throw "Error opening input file. Closing";
-//    }
+//	if (!fin) {
+//		throw "Error opening input file. Closing";
+//	}
 //
-//    // Loop through file, read each word into the vector of tokens
-//    while (fin >> currentWord) {
-//        // Remove punctuation
-//        currentWord = containsPunctuation(currentWord);
-//        // Transform term to lower case using built in method
-//        transform(currentWord.begin(), currentWord.end(), currentWord.begin(), ::tolower);
+//	// Loop through file, read each word into the vector of tokens
+//	while (fin >> currentWord) {
+//		// Remove punctuation
+//		currentWord = containsPunctuation(currentWord);
+//		// Transform term to lower case using built in method
+//		transform(currentWord.begin(), currentWord.end(), currentWord.begin(), ::tolower);
 //
-//        // Update longestWord if necessary
-//        if (currentWord.length() > longestWord) {
-//            longestWord = currentWord.length();
-//        }
+//		// Update longestWord if necessary
+//		if (currentWord.length() > longestWord) {
+//			longestWord = currentWord.length();
+//		}
 //
-//        // Using temporary entries to store the current word and its file name
-//        tempNF.term = currentWord;
-//        tempNF.docName = inputFile;
-//        tempF.term = currentWord;
-//        tempF.docName = inputFile;
+//		// Using temporary entries to store the current word and its file name
+//		tempNF.term = currentWord;
+//		tempNF.docName = inputFile;
+//		tempF.term = currentWord;
+//		tempF.docName = inputFile;
 //
-//        string docName = inputFile;
-//        string term = currentWord;
+//		string docName = inputFile;
+//		string term = currentWord;
+//
+//		if (findIndex((allTokens), term, docName) > 0) {
+//			increment(allTokens, allTokens[findIndex((allTokens), term, docName)],
+//					findIndex((allTokens), term, docName));
+//		} else {
+//			// Otherwise, it's a new entry so its frequency is 1. Push to the vector
+//			tempNF.freq = 1;
+//			allTokens.push_back(tempNF);
+//		}
 //
 //
-//        if (findIndex((allTokens), term, docName) > 0) {
-//        	increment(allTokens, allTokens[findIndex((allTokens), term, docName)],
-//        			findIndex((allTokens), term, docName));
-//        } else {
-//        	// Otherwise, it's a new entry so its frequency is 1. Push to the vector
-//            tempNF.freq = 1;
-//            allTokens.push_back(tempNF);
-//        }
-//
-//
-//        // Is it a stop word? If not, continue
-//        if (!isStopWord(currentWord, stopWordVector)) {
-//            // Is this a new entry for the filtered words list? If not, increment its frequency
-//            if (findIndex((filteredTokens), term, docName) > 0) {
-//                increment(filteredTokens, filteredTokens[findIndex((filteredTokens), term, docName)],
-//                		findIndex((filteredTokens), term, docName));
-//            }
-//            //Otherwise, it's a new entry and we push it to the list
-//            else {
-//                tempF.freq = 1;
-//                filteredTokens.push_back(tempF);
-//                if (currentWord.length() > longestFilteredWord) {
-//                	longestFilteredWord = currentWord.length();
-//                }
-//            }
-//        }
-//    }
-//    fin.close();
+//		// Is it a stop word? If not, continue
+//		if (!isStopWord(currentWord, stopWordVector)) {
+//			// Is this a new entry for the filtered words list? If not, increment its frequency
+//			if (findIndex((filteredTokens), term, docName) > 0) {
+//				increment(filteredTokens, filteredTokens[findIndex((filteredTokens), term, docName)],
+//						findIndex((filteredTokens), term, docName));
+//			}
+//			//Otherwise, it's a new entry and we push it to the list
+//			else {
+//				tempF.freq = 1;
+//				filteredTokens.push_back(tempF);
+//				if (currentWord.length() > longestFilteredWord) {
+//					longestFilteredWord = currentWord.length();
+//				}
+//			}
+//		}
+//	}
+//	fin.close();
 //}
 //
 //// Helper function to calculate the width of the table
@@ -292,18 +292,21 @@
 //	string indexFile = "ind_index.txt";
 //	vector<string> fileNames;
 //
-//	try {
-//		// Populates the vector with every line in the file (ie every file name we'll be going to next)
-//		fileNames = readFile(indexFile);
-//
-//		// Sort fileNames in alphabetical order.
-//		//This is necessary for the correct sorting of the terms and proper display.
-//		sort(fileNames.begin(), fileNames.end());
-//	}
-//	catch (const char* message) {
-//		// If the file doesn't open it'll display this message instead
-//		cerr << message << endl;
-//	}
+//	bool condition = true;
+//	do{
+//		try {
+//			// Populates the vector with every line in the file (ie every file name we'll be going to next)
+//			fileNames = readFile(indexFile);
+//			condition = true;
+//			// Sort fileNames in alphabetical order.
+//			//This is necessary for the correct sorting of the terms and proper display.
+//			sort(fileNames.begin(), fileNames.end());
+//		}
+//		catch (index_exception& e) {
+//			cout << e.what() << endl;
+//			condition = false;
+//		}
+//	}while(!condition);
 //	// PART 1: END
 //
 //

@@ -12,6 +12,7 @@
 #include "index_item.h"
 #include "document_indexer.h"
 #include <cstdlib>
+#include "index_exception.h"
 
 class Document: public index_item {
 public:

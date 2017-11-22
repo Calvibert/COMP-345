@@ -19,7 +19,7 @@
 //	vector<string> fileNames;
 //
 //	if (!fin)
-//		throw "Error opening file. Closing";
+//		throw "Error opening file. Please enter a proper file name.";
 //
 //	while (getline(fin, currentLine))
 //		fileNames.push_back(currentLine);

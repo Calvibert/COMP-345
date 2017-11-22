@@ -17,6 +17,8 @@
 class index_item {
 public:
 	index_item() : filename(""), itemContent(""), length(0) {}
+	index_item(std::string filename): filename(filename), itemContent(""), length(0) {}
+	index_item(std::string filename, std::string content, int length): filename(filename), itemContent(content), length(length) {}
 	virtual ~index_item() {}
 
 	void setContent(const std::string& content);

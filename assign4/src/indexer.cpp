@@ -6,3 +6,15 @@
  */
 
 #include "indexer.h"
+
+bool indexer::isNormalized() const {
+  return normalized;
+}
+
+void indexer::setNormalized(bool normalized) {
+  this->normalized = normalized;
+}
+
+bool indexer::getNormalizer() {
+	return normalized;
+}

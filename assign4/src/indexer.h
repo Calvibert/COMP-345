@@ -16,6 +16,12 @@ public:
 		index_item element;
 		double score;
 	};
+	bool isNormalized() const;
+	void setNormalized(bool normalized);
+	bool getNormalizer();
+
+private:
+	bool normalized;
 };
 
 #endif /* INDEXER_H_ */

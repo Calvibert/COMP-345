@@ -27,11 +27,16 @@ int main() {
 //  Document d("movie.metadata.tsv");
 //  Document e("plot_summaries.txt");
 //	mind.readDocument("rec_metadata.txt", "rec_plot_sample.txt");
-	mind.readDocument("movie.metadata.txt", "plot_summaries.txt");
+	mind.readDocument("rec_metadata.txt", "rec_plot_sample.txt");
 
-//  mind.normalize();
-//  mind.recommend("Taxi Blues");
-	std::cout << "program ended" << std::endl;
+	mind.normalize();
+	std::string moviename;
+	std::cout << "What movie do you like: " << std::endl;
+	getline(std::cin, moviename);
+//Taxi Blues
+
+	mind.recommend(moviename);
+	std::cout << "Here are some recommendations similar to your movie" << std::endl;
 
 	return 0;
 }

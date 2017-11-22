@@ -1,17 +1,24 @@
-/*
- * sentence_indexer.cpp
+/**
+ * @file
+ * @author Maude Braunstein, Samuel Dufresne
  *
- *  Created on: Nov 5, 2017
- *      Author: Maude
+ * This splits the document into sentences while building the index and queries the sentence-term matrix
+ *
  */
-
 #include "sentence_indexer.h"
 
+/**
+ * constructor
+ */
 sentence_indexer::sentence_indexer() {
 	normalized = false;
 	docCount = 0;
 }
 
+/**
+ * Reads the document from a sent filename
+ * @param fileName is a string with the filename of interest
+ */
 void sentence_indexer::readDocument(std::string fileName) {
 	Document doc(fileName);
 	addDoc(doc);
@@ -35,6 +42,11 @@ void sentence_indexer::readDocument(std::string fileName) {
 	incDocCount();
 }
 
+/**
+ * Adds tokens to index
+ * @param term is a string of the term
+ * @param sent is the sentence to be added related to the term
+ */
 void sentence_indexer::addToIndex(std::string term, sentence & sent) {
 	for (std::vector<sentence_indexer::Entry>::iterator it = index.begin();
 			it != index.end(); ++it) {
@@ -61,6 +73,9 @@ void sentence_indexer::addToIndex(std::string term, sentence & sent) {
 	index.push_back(newEntry);
 }
 
+/**
+ * normalizes/computes the tf-idf weights
+ */
 void sentence_indexer::normalize() {
 	double tf;
 	double idf;
@@ -76,6 +91,12 @@ void sentence_indexer::normalize() {
 	normalized = true;
 }
 
+/**
+ * Finds the results for the user's query
+ * @param queryTerms the terms of interest
+ * @param maxWords maximum number of words
+ * @return a vector of results for the queries
+ */
 std::vector<sentence_indexer::query_result> sentence_indexer::query(std::string queryTerms, int maxWords) {
 	std::vector<sentence_indexer::query_result> results;
 	std::map<std::string, sentence> sentsNamesSents = getSentenceNamesSents();
@@ -108,7 +129,7 @@ std::vector<sentence_indexer::query_result> sentence_indexer::query(std::string 
 		std::string filename = sentences[it].name();
 		std::string pos = std::to_string(sentences[it].getPos());
 		std::string identifier = filename + "-" + pos;
-		std::cout << sentences[it] << std::endl;
+		//std::cout << sentences[it] << std::endl;
 		sentsNamesSents[identifier] = sentences[it];
 		sents_tf_idfs[identifier] = emptyDbl;
 	}
@@ -147,7 +168,7 @@ std::vector<sentence_indexer::query_result> sentence_indexer::query(std::string 
 			}
 		}
 		if (!found) {
-			std::cout << "NOt found" << std::endl;
+			std::cout << "Not found" << std::endl;
 			incMap(sents_tf_idfs);
 		}
 	}
@@ -182,7 +203,11 @@ std::vector<sentence_indexer::query_result> sentence_indexer::query(std::string 
 	return results;
 }
 
-// Pad the map with empty indexes with zeros at tf-idfs -> TERM WAS FOUND
+/**
+ * Pads the map with empty indexes with 0s at tf-idfs -> TERM WAS FOUND
+ * @param map of a string and a vector of doubles
+ * @param length
+ */
 void sentence_indexer::padMap(std::map<std::string, std::vector<double> > & map,
 		unsigned length) {
 	for (std::map<std::string, std::vector<double> >::iterator it = map.begin();
@@ -196,7 +221,10 @@ void sentence_indexer::padMap(std::map<std::string, std::vector<double> > & map,
 	}
 }
 
-// Pad the whole map a row of zeros -> NO TERMS MATCHED
+/**
+ * Pad the whole map a row of zeros -> NO TERMS MATCHED
+ * @param map of a string and a vector of doubles
+ */
 void sentence_indexer::incMap(std::map<std::string, std::vector<double> > & map) {
 	for (std::map<std::string, std::vector<double> >::iterator it = map.begin();
 			it != map.end(); ++it) {
@@ -207,10 +235,17 @@ void sentence_indexer::incMap(std::map<std::string, std::vector<double> > & map)
 	}
 }
 
+/**
+ * add the document to a vector of documents
+ * @param d the document to be added
+ */
 void sentence_indexer::addDoc(Document & d) {
 	docs.push_back(d);
 }
-
+/**
+ * add the sentences to a vector of sentences
+ * @param vs vector of sentences
+ */
 void sentence_indexer::addSentences(std::vector<sentence> & vs) {
 	for (std::vector<sentence>::const_iterator it = vs.begin(); it != vs.end();
 			++it) {
@@ -218,6 +253,11 @@ void sentence_indexer::addSentences(std::vector<sentence> & vs) {
 	}
 }
 
+/**
+ * returns the sentence of a specified filename
+ * @param fileName
+ * @return the sentence
+ */
 sentence sentence_indexer::getSentence(std::string fileName) {
 	for (std::vector<sentence>::iterator it = sentences.begin();
 			it != sentences.end(); ++it) {
@@ -229,10 +269,18 @@ sentence sentence_indexer::getSentence(std::string fileName) {
 	return empty;
 }
 
+/**
+ * increase number of documents
+ */
 void sentence_indexer::incDocCount() {
 	++docCount;
 }
 
+/**
+ * getter for the entry of a given term
+ * @param term is the word of interest
+ * @return the entry
+ */
 sentence_indexer::Entry sentence_indexer::getEntry(std::string term) {
 	for (unsigned i = 0; i < index.size(); ++i) {
 		if (index[i].term == term) {

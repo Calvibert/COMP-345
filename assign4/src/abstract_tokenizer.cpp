@@ -1,16 +1,20 @@
-/*
- * abstract_tokenizer.cpp
+/**
+ * @file
+ * @author Maude Braunstein, Samuel Dufresne
+ *
+ * The abstract base class containing information and functions for both word_tokenizer and sentence_tokenizer
  *
  */
-
 #include "abstract_tokenizer.h"
 
-
+/**
+ * a function to help the porogram parse through words containing punctuation
+ * @param sentence a string with problematic words and abbreviations
+ */
 void abstract_tokenizer::dealWithAbbreviations(std::string& sentence){
 	//using temp because we dont want the output to be all lowercase, but making it all lowercase makes comparisons easier
 	std::string temp = sentence;
 	std::transform(temp.begin(), temp.end(), temp.begin(), ::tolower);
-//
 	//We make the replacement in the old string, so the positions change slightly if it encounters
 	//more than one instance of "U.N.". We need to shift it by 2 every time it finds one (or some other value, depends on length of
 	//what we're replacing)

@@ -1,8 +1,9 @@
-/*
- * summarizer.cpp
+/**
+ * @file
+ * @author Maude Braunstein, Samuel Dufresne
  *
- *  Created on: Nov 1, 2017
- *      Author: Maude
+ * The main for the summarizer. Reads user's input for index file and question file, displays sumamrizer results
+ *
  */
 
 #include <iostream>
@@ -22,6 +23,11 @@
 
 using namespace std;
 
+/**
+ * Indexes the user-entered file
+ * @param inputFile filename
+ * @return a vector of strings containing filenames
+ */
 vector<string> indexFiles(string inputFile) {
 	ifstream fin(inputFile);
 	string currentLine;
@@ -37,7 +43,6 @@ vector<string> indexFiles(string inputFile) {
 	return fileNames;
 
 }
-
 
 int main(){
 
@@ -59,7 +64,7 @@ int main(){
 	cin >> questionfile;
 
 	Document doc(questionfile);
-	cout << doc.name() << endl;
+	//cout << doc.name() << endl;
 
 	std::vector<sentence_indexer::query_result> results = sidx.query(doc.content());
 

@@ -1,8 +1,9 @@
-/*
- * index_item.h
+/**
+ * @file
+ * @author Maude Braunstein, Samuel Dufresne
  *
- *  Created on: Nov 5, 2017
- *      Author: Maude
+ * The abstract base class for document and sentence
+ *
  */
 
 #ifndef INDEX_ITEM_H_

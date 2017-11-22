@@ -1,8 +1,9 @@
-/*
- * document_indexer.h
+/**
+ * @file
+ * @author Maude Braunstein, Samuel Dufresne
  *
- *  Created on: Nov 5, 2017
- *      Author: Maude
+ * This class indexes and queries complete documents
+ *
  */
 
 #ifndef DOCUMENT_INDEXER_H_

@@ -1,21 +1,33 @@
-/*
- * sentence_tokenizer.cpp
+/**
+ * @file
+ * @author Maude Braunstein, Samuel Dufresne
  *
- *  Created on: Nov 2, 2017
- *      Author: Maude
+ * This class splits the document into sentence tokens
+ *
  */
 
 #include "sentence_tokenizer.h"
 
+/**
+ * Constructor
+ */
 sentence_tokenizer::sentence_tokenizer() {
 	std::vector<sentence> empty;
 	sentences = empty;
 }
 
+/**
+ * destructor
+ */
 sentence_tokenizer::~sentence_tokenizer() {
 	// TODO Auto-generated destructor stub
 }
 
+/**
+ * This function finds cases of titles in sentences, like Dr. Mrs. Mr. and allows it not to be split when finding the period (lets the function that calls it know)
+ * @param sentence of interest, check for a title
+ * @return whether or not a title was found in the sentence
+ */
 bool sentence_tokenizer::testForTitle(std::string sentence){
 	int n = sentence.length();
 	std::transform(sentence.begin(), sentence.end(), sentence.begin(), ::tolower);
@@ -42,7 +54,11 @@ bool sentence_tokenizer::testForTitle(std::string sentence){
 	else
 		return false;
 }
-
+/**
+ * This function splits an input document into tokens of sentences
+ * @param doc a Document containing information on a file
+ * @return a vector of sentences
+ */
 std::vector<sentence> & sentence_tokenizer::splitIntoSentences(Document & doc){
 	std::string filecontents = doc.content();
 	sentence newSentence;
@@ -117,7 +133,11 @@ std::vector<sentence> & sentence_tokenizer::splitIntoSentences(Document & doc){
 		//currently wont contain the last sentence if a period is forgotten
 		return sentences;
 }
-
+/**
+ * a helper function to find whitespace and make sure a line that's all whitespace isn't added as a sentence
+ * @param sentence is a string to check for whitespace
+ * @return whether or not the sentence contains anything that isn't whitespace
+ */
 bool sentence_tokenizer::checkIfWhitespace(std::string sentence){
 	int n = sentence.length();
 	for(int i = 0; i != n; ++i){
@@ -126,7 +146,10 @@ bool sentence_tokenizer::checkIfWhitespace(std::string sentence){
 	}
 	return true;
 }
-
+/**
+ * getter for sentences
+ * @return a vector of sentences
+ */
 std::vector<sentence> sentence_tokenizer::getSentences() {
 	return sentences;
 }

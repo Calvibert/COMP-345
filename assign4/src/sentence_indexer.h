@@ -1,8 +1,9 @@
-/*
- * sentence_indexer.h
+/**
+ * @file
+ * @author Maude Braunstein, Samuel Dufresne
  *
- *  Created on: Nov 5, 2017
- *      Author: Maude
+ * This splits the document into sentences while building the index and queries the sentence-term matrix
+ *
  */
 
 #ifndef SENTENCE_INDEXER_H_

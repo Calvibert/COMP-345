@@ -1,25 +1,39 @@
-/*
- * word_tokenizer.cpp
+/**
+ * @file
+ * @author Maude Braunstein, Samuel Dufresne
  *
- *  Created on: Nov 2, 2017
- *      Author: Maude
+ * This class splits the document into word tokens
+ *
  */
 
 #include "word_tokenizer.h"
 
+/**
+ * default constructor
+ */
 word_tokenizer::word_tokenizer() {
 
 }
-
+/**
+ * constructor
+ * @param string representing the text to be split into individual words
+ */
 word_tokenizer::word_tokenizer(std::string text) {
 	std::vector<std::string> tokens = splitIntoTokens(text);
 }
 
+/**
+ * deconstructor
+ */
 word_tokenizer::~word_tokenizer() {
 
 }
 
-// It breaks the words down depending on that list of characters
+/**
+ * This function takes a string and splits it into individual words, handling most punctuation and abbreviations
+ * @param text is the document text to be split
+ * @return a vector of individual words
+ */
 std::vector<std::string>& word_tokenizer::splitIntoTokens(std::string text){
 	dealWithAbbreviations(text); //common abbreviations like UN UK IE, etc.
 	std::string word;
@@ -46,9 +60,17 @@ std::vector<std::string>& word_tokenizer::splitIntoTokens(std::string text){
 	return tokens;
 }
 
+/**
+ * Overloaded << operator to provide meaningful debug output
+ * @param os the string to be returned
+ * @param wt an object of word_tokenizer
+ * @return the output
+ */
 std::ostream& operator<<(std::ostream& os, const word_tokenizer& wt){
 	for(std::vector<std::string>::const_iterator it = wt.tokens.begin(); it != wt.tokens.end(); ++it){
 		os << *it << std::endl;
 	}
 	return os;
 }
+
+

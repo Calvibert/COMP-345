@@ -1,10 +1,10 @@
-////============================================================================
-//// Name        : assignment2.cpp
-//// Author      :
-//// Version     :
-//// Copyright   : Your copyright notice
-//// Description : Hello World in C++, Ansi-style
-////============================================================================
+/**
+ * @file
+ * @author Maude Braunstein, Samuel Dufresne
+ *
+ * The main for the search engine. Uncomment to function.
+ *
+ */
 //
 //#include <iostream>
 //#include "Document.h"

@@ -1,8 +1,9 @@
-/*
- * abstracttokenizer.h
+/**
+ * @file
+ * @author Maude Braunstein, Samuel Dufresne
  *
- *  Created on: Nov 1, 2017
- *      Author: Maude
+ * The abstract base class containing information and functions for both word_tokenizer and sentence_tokenizer
+ *
  */
 
 

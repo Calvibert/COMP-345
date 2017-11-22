@@ -1,8 +1,9 @@
-/*
- * sentence_tokenizer.h
+/**
+ * @file
+ * @author Maude Braunstein, Samuel Dufresne
  *
- *  Created on: Nov 2, 2017
- *      Author: Maude
+ * This class splits the document into sentence tokens
+ *
  */
 
 #ifndef SRC_SENTENCE_TOKENIZER_H_
@@ -19,10 +20,10 @@ public:
 	bool testForTitle(std::string sentence);
 	std::vector<sentence>& splitIntoSentences(Document & doc);
 	bool checkIfWhitespace(std::string sentence);
-	//void dealWithAbbreviations(std::string& sentence);
 	friend std::ostream& operator<<(std::ostream& os,
 			sentence_tokenizer& wst);
 	std::vector<sentence> getSentences();
+
 
 private:
 	std::vector<sentence> sentences;

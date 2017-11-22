@@ -1,8 +1,9 @@
-/*
- * word_tokenizer.h
+/**
+ * @file
+ * @author Maude Braunstein, Samuel Dufresne
  *
- *  Created on: Nov 2, 2017
- *      Author: Maude
+ * This class splits the document into word tokens
+ *
  */
 
 #ifndef SRC_WORD_TOKENIZER_H_
@@ -22,6 +23,7 @@ public:
 	virtual ~word_tokenizer();
 	std::vector<std::string>& splitIntoTokens(std::string filename);
 	friend std::ostream& operator<<(std::ostream& os, const word_tokenizer& wt);
+
 private:
 	std::vector<std::string> tokens;
 };

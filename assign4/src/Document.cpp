@@ -1,8 +1,9 @@
-/*
- * Document.cpp
+/**
+ * @file
+ * @author Maude Braunstein, Samuel Dufresne
  *
- *  Created on: Nov 1, 2017
- *      Author: Maude
+ * This class represents a given document
+ *
  */
 
 #include "Document.h"

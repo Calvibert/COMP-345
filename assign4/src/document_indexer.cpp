@@ -1,29 +1,43 @@
-/*
- * document_indexer.cpp
+/**
+ * @file
+ * @author Maude Braunstein, Samuel Dufresne
  *
- *  Created on: Nov 5, 2017
- *      Author: Maude
+ * This class indexes and queries complete documents
+ *
  */
 
 #include "document_indexer.h"
 
-// Default constructor
+/**
+ * default constructor
+ */
 document_indexer::document_indexer() {
 	normalized = false;
 	docCount = 0;
 	index = {};
 }
 
-// Return the number of documents processed by the Indexer
+/**
+ * returns the number of documents processed by the indexer
+ * @return the number
+ */
 int document_indexer::size() {
 	return docCount;
 }
 
+/**
+ * Sets the number of documents processed by the indexer
+ * @param s value
+ */
 void document_indexer::setDocCount(int s) {
 	docCount = s;
 }
 
-// Takes a Document object on the LS, an Indexer on RS
+/**
+ * Takes a Document object on the LS, an Indexer on RS
+ * @param doc document of interest
+ * @param indexer document_indexer of interest
+ */
 void operator>>(index_item doc, document_indexer & indexer) {
 	word_tokenizer tokenizer;
 	std::vector<std::string> tokens = tokenizer.splitIntoTokens(doc.content());
@@ -71,12 +85,16 @@ void operator>>(index_item doc, document_indexer & indexer) {
 	indexer.resetNormalized();
 }
 
-// Helper function to increment the doc count
+/**
+ * Helper function to increment document count
+ */
 void document_indexer::incrementDocCount() {
 	docCount++;
 }
 
-// For each entry, compute its tf-idf
+/**
+ * compute tf-idf weight of document
+ */
 void document_indexer::normalize() {
 	double tf;
 	double idf;
@@ -92,7 +110,12 @@ void document_indexer::normalize() {
 	normalized = true;
 }
 
-// Operation to query the index
+/**
+ * Queries the index
+ * @param queryTerms the query(ies)
+ * @param n number of queries
+ * @return a vector of query results for the document
+ */
 std::vector<document_indexer::query_result> document_indexer::query(std::string queryTerms, int n) {
 	std::vector<std::string> query_terms;
 	std::vector<query_result> results;
@@ -199,7 +222,12 @@ std::vector<document_indexer::query_result> document_indexer::query(std::string 
 	return results;
 
 }
-
+/**
+ * finds a given term in a vector
+ * @param vector the vector to be searched
+ * @param term the term to find
+ * @return where it was found
+ */
 int document_indexer::findInVector(const std::vector<std::string> & vector,
 		const std::string & term) {
 	for (unsigned i = 0; i < vector.size(); ++i) {
@@ -210,6 +238,12 @@ int document_indexer::findInVector(const std::vector<std::string> & vector,
 	return -1;
 }
 
+/**
+ * Finds a given term in a map
+ * @param map the map to be searched
+ * @param term the term to find
+ * @return where it was found
+ */
 std::string document_indexer::findInMap(
 		const std::map<std::string, std::vector<double> > & map,
 		const std::string & term) {
@@ -222,6 +256,11 @@ std::string document_indexer::findInMap(
 	return "not found";
 }
 
+/**
+ * Pad the vector for the elements that weren't in the query term
+ * @param map
+ * @param length
+ */
 void document_indexer::padMap(std::map<std::string, std::vector<double> > & map,
 		unsigned length) {
 	for (std::map<std::string, std::vector<double> >::iterator it = map.begin();
@@ -235,6 +274,10 @@ void document_indexer::padMap(std::map<std::string, std::vector<double> > & map,
 	}
 }
 
+/**
+ * pad the vector of all elements (none had the query term)
+ * @param map
+ */
 void document_indexer::incMap(std::map<std::string, std::vector<double> > & map) {
 	for (std::map<std::string, std::vector<double> >::iterator it = map.begin();
 			it != map.end(); ++it) {
@@ -245,28 +288,48 @@ void document_indexer::incMap(std::map<std::string, std::vector<double> > & map)
 	}
 }
 
+/**
+ * Getter for the document associated with the name
+ * @param name the string/name of interest
+ * @return the index_item
+ */
 index_item document_indexer::getDocFromName(std::string name) {
 	return docName_doc[name];
 }
 
-// Return the index of the Indexer
+/**
+ * Getter for the index
+ * @return a vector of entires
+ */
 std::vector<document_indexer::Entry> document_indexer::getIndex() const {
 	return index;
 }
 
-// Sets the Indexer's normalized toggle to false.
-// normalize() must be run again
+/**
+ * Sets the Indexer's normalized toggle to false.
+ * normalize() must be run again
+ */
 void document_indexer::resetNormalized() {
 	normalized = false;
 }
 
-// Meaningful output operator of the Indexer object
+/**
+ * Meaningful output operator of the Indexer object
+ * @param os string to be output
+ * @param id the document_indexer
+ * @return the output
+ */
 std::ostream& operator<<(std::ostream& os, const document_indexer& id) {
 	os << "Doc count: " << id.docCount << ",";
 	os << "" << id.index[0].docs.size();
 	return os;
 }
 
+/**
+ * Displays the results in a meaningful way
+ * @param results query results
+ * @return the output
+ */
 std::string document_indexer::toString(std::vector<document_indexer::query_result> results) {
 	std::string output = "";
 	if (normalized) {
@@ -288,14 +351,27 @@ std::string document_indexer::toString(std::vector<document_indexer::query_resul
 	return output;
 }
 
+/**
+ * getter for the document count
+ * @return
+ */
 int document_indexer::getDocCount() const {
 	return docCount;
 }
 
+/**
+ * setter for the index
+ * @param i a vector of document_indexer entries
+ */
 void document_indexer::setIndex(std::vector<document_indexer::Entry> i) {
 	index = i;
 }
 
+/**
+ * getter for an entry
+ * @param term to find the entry of
+ * @return the entry
+ */
 document_indexer::Entry document_indexer::getEntry(std::string term) {
 	for (unsigned i = 0; i < index.size(); ++i) {
 		if (index[i].term == term) {
@@ -306,18 +382,36 @@ document_indexer::Entry document_indexer::getEntry(std::string term) {
 	return empty;
 }
 
+/**
+ * getter for the document names
+ * @return a vector of document names
+ */
 std::vector<std::string> document_indexer::getDocNames() {
 	return docNames;
 }
 
+/**
+ * getter for map of document names and their index item
+ * @return the map
+ */
 std::map<std::string, index_item> document_indexer::getDocNameDoc() {
 	return docName_doc;
 }
 
+/**
+ * setter for map of document names and their index item
+ * @param map to be set
+ */
 void document_indexer::setDocNameDoc(std::map<std::string, index_item> map) {
 	docName_doc = map;
 }
 
+/**
+ * Sort the query results
+ * @param results to be sorted
+ * @param max numeber of them
+ * @return the sorted vector of query results
+ */
 std::vector<document_indexer::query_result> document_indexer::sort(std::vector<document_indexer::query_result> results, int max) {
 	std::vector<document_indexer::query_result> sorted;
 	std::vector<bool> done;

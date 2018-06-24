@@ -1,4 +1,0 @@
-ind_fileone.txt
-ind_filetwo.txt
-ind_filethree.txt
-ind_filefour.txt

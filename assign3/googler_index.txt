@@ -1,3 +1,0 @@
-googler_file1.txt
-googler_file2.txt
-googler_file3.txt
